@@ -24,7 +24,6 @@
       animation: shake 0.35s ease-in-out;
     }
 
-    /* THEMES */
     body.theme-midnight {
       background-color: #0b0f19;
       --card-bg: rgba(30, 41, 59, 0.7);
@@ -56,19 +55,18 @@
     }
     body.theme-minimal .text-white { color: #0f172a !important; }
     body.theme-minimal .text-slate-400 { color: #64748b !important; }
-    body.theme-minimal .glass-card { box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05); }
   </style>
 </head>
 <body class="theme-midnight text-slate-100 min-h-screen pb-24 selection:bg-indigo-500 selection:text-white">
 
   <!-- Ambient Light Background -->
   <div class="fixed inset-0 overflow-hidden pointer-events-none z-0">
-    <div id="glow1" class="absolute -top-40 left-1/2 -translate-x-1/2 w-96 h-96 rounded-full blur-[120px] transition-all duration-500" style="background: var(--glow-1);"></div>
-    <div id="glow2" class="absolute top-1/2 -left-20 w-80 h-80 rounded-full blur-[100px] transition-all duration-500" style="background: var(--glow-2);"></div>
+    <div id="glow1" class="absolute -top-40 left-1/2 -translate-x-1/2 w-96 h-96 rounded-full blur-[120px]" style="background: var(--glow-1);"></div>
+    <div id="glow2" class="absolute top-1/2 -left-20 w-80 h-80 rounded-full blur-[100px]" style="background: var(--glow-2);"></div>
   </div>
 
-  <!-- PIN LOCK SCREEN (iOS 6-Digit Style) -->
-  <div id="pinLockScreen" class="fixed inset-0 bg-[#0b0f19]/95 backdrop-blur-2xl z-[100] flex flex-col items-center justify-center p-4">
+  <!-- PIN LOCK SCREEN -->
+  <div id="pinLockScreen" class="fixed inset-0 bg-[#0b0f19] z-[100] flex flex-col items-center justify-center p-4">
     <div id="pinPadContainer" class="w-full max-w-xs flex flex-col items-center">
       
       <div class="w-16 h-16 rounded-3xl bg-gradient-to-tr from-indigo-500 to-violet-500 flex items-center justify-center shadow-lg shadow-indigo-500/30 mb-4 ring-4 ring-indigo-500/20">
@@ -91,24 +89,24 @@
       </div>
 
       <!-- Numeric Keypad Grid -->
-      <div class="grid grid-cols-3 gap-4 w-full px-2">
-        <button onclick="pressPin('1')" class="h-16 rounded-2xl glass-card text-xl font-semibold hover:bg-slate-700/60 active:scale-95 transition">1</button>
-        <button onclick="pressPin('2')" class="h-16 rounded-2xl glass-card text-xl font-semibold hover:bg-slate-700/60 active:scale-95 transition">2</button>
-        <button onclick="pressPin('3')" class="h-16 rounded-2xl glass-card text-xl font-semibold hover:bg-slate-700/60 active:scale-95 transition">3</button>
-        <button onclick="pressPin('4')" class="h-16 rounded-2xl glass-card text-xl font-semibold hover:bg-slate-700/60 active:scale-95 transition">4</button>
-        <button onclick="pressPin('5')" class="h-16 rounded-2xl glass-card text-xl font-semibold hover:bg-slate-700/60 active:scale-95 transition">5</button>
-        <button onclick="pressPin('6')" class="h-16 rounded-2xl glass-card text-xl font-semibold hover:bg-slate-700/60 active:scale-95 transition">6</button>
-        <button onclick="pressPin('7')" class="h-16 rounded-2xl glass-card text-xl font-semibold hover:bg-slate-700/60 active:scale-95 transition">7</button>
-        <button onclick="pressPin('8')" class="h-16 rounded-2xl glass-card text-xl font-semibold hover:bg-slate-700/60 active:scale-95 transition">8</button>
-        <button onclick="pressPin('9')" class="h-16 rounded-2xl glass-card text-xl font-semibold hover:bg-slate-700/60 active:scale-95 transition">9</button>
-        <button onclick="clearPin()" class="h-16 rounded-2xl flex items-center justify-center text-xs font-medium text-slate-400 hover:text-white transition">ล้าง</button>
-        <button onclick="pressPin('0')" class="h-16 rounded-2xl glass-card text-xl font-semibold hover:bg-slate-700/60 active:scale-95 transition">0</button>
-        <button onclick="deletePin()" class="h-16 rounded-2xl flex items-center justify-center text-slate-400 hover:text-white transition">
+      <div class="grid grid-cols-3 gap-3.5 w-full px-2">
+        <button onclick="pressPin('1')" class="h-14 rounded-2xl glass-card text-xl font-semibold hover:bg-slate-700/60 active:scale-95 transition">1</button>
+        <button onclick="pressPin('2')" class="h-14 rounded-2xl glass-card text-xl font-semibold hover:bg-slate-700/60 active:scale-95 transition">2</button>
+        <button onclick="pressPin('3')" class="h-14 rounded-2xl glass-card text-xl font-semibold hover:bg-slate-700/60 active:scale-95 transition">3</button>
+        <button onclick="pressPin('4')" class="h-14 rounded-2xl glass-card text-xl font-semibold hover:bg-slate-700/60 active:scale-95 transition">4</button>
+        <button onclick="pressPin('5')" class="h-14 rounded-2xl glass-card text-xl font-semibold hover:bg-slate-700/60 active:scale-95 transition">5</button>
+        <button onclick="pressPin('6')" class="h-14 rounded-2xl glass-card text-xl font-semibold hover:bg-slate-700/60 active:scale-95 transition">6</button>
+        <button onclick="pressPin('7')" class="h-14 rounded-2xl glass-card text-xl font-semibold hover:bg-slate-700/60 active:scale-95 transition">7</button>
+        <button onclick="pressPin('8')" class="h-14 rounded-2xl glass-card text-xl font-semibold hover:bg-slate-700/60 active:scale-95 transition">8</button>
+        <button onclick="pressPin('9')" class="h-14 rounded-2xl glass-card text-xl font-semibold hover:bg-slate-700/60 active:scale-95 transition">9</button>
+        <button onclick="clearPin()" class="h-14 rounded-2xl flex items-center justify-center text-xs font-medium text-slate-400 hover:text-white transition">ล้าง</button>
+        <button onclick="pressPin('0')" class="h-14 rounded-2xl glass-card text-xl font-semibold hover:bg-slate-700/60 active:scale-95 transition">0</button>
+        <button onclick="deletePin()" class="h-14 rounded-2xl flex items-center justify-center text-slate-400 hover:text-white transition">
           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2M3 12l6.414 6.414a2 2 0 001.414.586H19a2 2 0 002-2V7a2 2 0 00-2-2h-7.172a2 2 0 00-1.414.586L3 12z"></path></svg>
         </button>
       </div>
 
-      <p id="pinErrorMsg" class="text-xs text-rose-400 mt-6 min-h-[1rem] font-medium tracking-wide"></p>
+      <p id="pinErrorMsg" class="text-xs text-rose-400 mt-5 min-h-[1rem] font-medium tracking-wide"></p>
     </div>
   </div>
 
@@ -134,18 +132,17 @@
 
       <!-- Quick Actions -->
       <div class="flex items-center space-x-2">
-        <!-- Theme Switcher Button -->
-        <button onclick="cycleTheme()" title="เปลี่ยนพื้นหลัง / ธีม" class="p-2.5 rounded-xl glass-card hover:bg-slate-700/60 text-slate-300 transition hover:scale-105 active:scale-95">
+        <button onclick="cycleTheme()" title="เปลี่ยนพื้นหลัง" class="p-2.5 rounded-xl glass-card hover:bg-slate-700/60 text-slate-300 transition active:scale-95 text-xs">
           🎨
         </button>
-        <button onclick="exportData()" title="สำรองข้อมูล" class="p-2.5 rounded-xl glass-card hover:bg-slate-700/60 text-slate-300 transition hover:scale-105 active:scale-95">
+        <button onclick="exportData()" title="สำรองข้อมูล" class="p-2.5 rounded-xl glass-card hover:bg-slate-700/60 text-slate-300 transition active:scale-95">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
         </button>
-        <label title="นำเข้าข้อมูล" class="p-2.5 rounded-xl glass-card hover:bg-slate-700/60 text-slate-300 transition hover:scale-105 active:scale-95 cursor-pointer">
+        <label title="นำเข้าข้อมูล" class="p-2.5 rounded-xl glass-card hover:bg-slate-700/60 text-slate-300 transition active:scale-95 cursor-pointer">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
           <input type="file" id="importFileInput" accept=".json" class="hidden" onchange="importData(event)">
         </label>
-        <button onclick="changePinSetting()" title="เปลี่ยนรหัส PIN" class="p-2.5 rounded-xl glass-card hover:bg-slate-700/60 text-slate-300 transition hover:scale-105 active:scale-95">
+        <button onclick="changePinSetting()" title="เปลี่ยนรหัส PIN" class="p-2.5 rounded-xl glass-card hover:bg-slate-700/60 text-slate-300 transition active:scale-95">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"></path></svg>
         </button>
       </div>
@@ -311,8 +308,12 @@
     // --- THEME SYSTEM ---
     const THEMES = ['theme-midnight', 'theme-sunset', 'theme-emerald', 'theme-minimal'];
     function applySavedTheme() {
-      const savedTheme = localStorage.getItem('app_theme') || 'theme-midnight';
-      document.body.className = `${savedTheme} text-slate-100 min-h-screen pb-24 selection:bg-indigo-500 selection:text-white`;
+      try {
+        const savedTheme = localStorage.getItem('app_theme') || 'theme-midnight';
+        document.body.className = `${savedTheme} text-slate-100 min-h-screen pb-24 selection:bg-indigo-500 selection:text-white`;
+      } catch (e) {
+        console.error(e);
+      }
     }
 
     function cycleTheme() {
@@ -329,21 +330,25 @@
     let isSettingInitialPin = false;
 
     function initPinLock() {
-      const savedPin = localStorage.getItem(PIN_KEY);
-      currentPinInput = '';
-      updateDots();
-      document.getElementById('pinErrorMsg').innerText = '';
+      try {
+        const savedPin = localStorage.getItem(PIN_KEY);
+        currentPinInput = '';
+        updateDots();
+        document.getElementById('pinErrorMsg').innerText = '';
 
-      if (!savedPin) {
-        isSettingInitialPin = true;
-        document.getElementById('pinPromptTitle').innerText = 'ตั้งรหัส PIN ใหม่';
-        document.getElementById('pinPromptSubtitle').innerText = 'กำหนดรหัส 6 หลักเพื่อความปลอดภัย';
-      } else {
-        isSettingInitialPin = false;
-        document.getElementById('pinPromptTitle').innerText = 'Passcode';
-        document.getElementById('pinPromptSubtitle').innerText = 'ใส่รหัส PIN 6 หลักเพื่อเข้าใช้งาน';
+        if (!savedPin) {
+          isSettingInitialPin = true;
+          document.getElementById('pinPromptTitle').innerText = 'ตั้งรหัส PIN ใหม่';
+          document.getElementById('pinPromptSubtitle').innerText = 'กำหนดรหัส 6 หลักเพื่อความปลอดภัย';
+        } else {
+          isSettingInitialPin = false;
+          document.getElementById('pinPromptTitle').innerText = 'Passcode';
+          document.getElementById('pinPromptSubtitle').innerText = 'ใส่รหัส PIN 6 หลักเพื่อเข้าใช้งาน';
+        }
+        document.getElementById('pinLockScreen').classList.remove('hidden');
+      } catch (e) {
+        console.error(e);
       }
-      document.getElementById('pinLockScreen').classList.remove('hidden');
     }
 
     function pressPin(num) {
@@ -371,6 +376,7 @@
     function updateDots() {
       for (let i = 0; i < 6; i++) {
         const dot = document.getElementById(`dot-${i}`);
+        if (!dot) continue;
         if (i < currentPinInput.length) {
           dot.className = "w-3.5 h-3.5 rounded-full bg-gradient-to-r from-indigo-500 to-violet-500 shadow-md shadow-indigo-500/50 scale-110 transition-all duration-150";
         } else {
@@ -424,8 +430,12 @@
     }
 
     function getBills(date = currentDate) {
-      const data = localStorage.getItem(getStorageKey(date));
-      return data ? JSON.parse(data) : [];
+      try {
+        const data = localStorage.getItem(getStorageKey(date));
+        return data ? JSON.parse(data) : [];
+      } catch (e) {
+        return [];
+      }
     }
 
     function saveBills(bills, date = currentDate) {
@@ -437,9 +447,12 @@
     }
 
     function updateMonthHeader() {
-      const monthName = thaiMonths[currentDate.getMonth()];
-      const thaiYear = currentDate.getFullYear() + 543;
-      document.getElementById('currentMonthLabel').innerText = `${monthName} ${thaiYear}`;
+      const el = document.getElementById('currentMonthLabel');
+      if (el) {
+        const monthName = thaiMonths[currentDate.getMonth()];
+        const thaiYear = currentDate.getFullYear() + 543;
+        el.innerText = `${monthName} ${thaiYear}`;
+      }
     }
 
     function changeMonth(direction) {
@@ -452,6 +465,7 @@
       currentFilter = filter;
       ['all', 'unpaid', 'paid'].forEach(type => {
         const btn = document.getElementById('filter' + type.charAt(0).toUpperCase() + type.slice(1));
+        if (!btn) return;
         if (type === filter) {
           btn.className = "px-3 py-1 rounded-lg text-xs font-medium bg-indigo-600 text-white transition";
         } else {
@@ -581,8 +595,10 @@
       const exportObject = {};
       for (let i = 0; i < localStorage.length; i++) {
         const key = localStorage.key(i);
-        if (key.startsWith('bills_')) {
-          exportObject[key] = JSON.parse(localStorage.getItem(key));
+        if (key && key.startsWith('bills_')) {
+          try {
+            exportObject[key] = JSON.parse(localStorage.getItem(key));
+          } catch(e) {}
         }
       }
       const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportObject, null, 2));
@@ -628,168 +644,189 @@
     }
 
     function buildAnalytics() {
-      const year = currentDate.getFullYear();
-      document.getElementById('analyticsYearLabel').innerText = `ประจำปี พ.ศ. ${year + 543}`;
+      try {
+        const year = currentDate.getFullYear();
+        document.getElementById('analyticsYearLabel').innerText = `ประจำปี พ.ศ. ${year + 543}`;
 
-      const monthlyTotals = [];
-      let yearTotal = 0;
-      let yearPaid = 0;
-      let monthsWithData = 0;
+        const monthlyTotals = [];
+        let yearTotal = 0;
+        let yearPaid = 0;
+        let monthsWithData = 0;
 
-      for (let m = 0; m < 12; m++) {
-        const d = new Date(year, m, 1);
-        const bills = getBills(d);
-        let mTotal = 0;
-        if (bills.length > 0) monthsWithData++;
-        bills.forEach(b => {
-          mTotal += b.amount;
-          yearTotal += b.amount;
-          if (b.paid) yearPaid += b.amount;
-        });
-        monthlyTotals.push(mTotal);
+        for (let m = 0; m < 12; m++) {
+          const d = new Date(year, m, 1);
+          const bills = getBills(d);
+          let mTotal = 0;
+          if (bills.length > 0) monthsWithData++;
+          bills.forEach(b => {
+            mTotal += (b.amount || 0);
+            yearTotal += (b.amount || 0);
+            if (b.paid) yearPaid += (b.amount || 0);
+          });
+          monthlyTotals.push(mTotal);
+        }
+
+        document.getElementById('yearTotalAmount').innerText = formatCurrency(yearTotal);
+        document.getElementById('yearPaidAmount').innerText = formatCurrency(yearPaid);
+        document.getElementById('yearAverageMonth').innerText = formatCurrency(monthsWithData > 0 ? (yearTotal / monthsWithData) : 0);
+
+        const barCanvas = document.getElementById('monthlyBarChart');
+        if (barCanvas) {
+          const barCtx = barCanvas.getContext('2d');
+          if (barChartInstance) barChartInstance.destroy();
+          barChartInstance = new Chart(barCtx, {
+            type: 'bar',
+            data: {
+              labels: ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'],
+              datasets: [{
+                label: 'ยอดค่าใช้จ่าย (บาท)',
+                data: monthlyTotals,
+                backgroundColor: 'rgba(99, 102, 241, 0.7)',
+                borderColor: 'rgb(99, 102, 241)',
+                borderRadius: 8,
+                borderWidth: 1
+              }]
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: { legend: { display: false } },
+              scales: {
+                y: { ticks: { color: '#64748b' }, grid: { color: 'rgba(51, 65, 85, 0.3)' } },
+                x: { ticks: { color: '#64748b' }, grid: { display: false } }
+              }
+            }
+          });
+        }
+
+        const pieCanvas = document.getElementById('statusPieChart');
+        if (pieCanvas) {
+          const pieCtx = pieCanvas.getContext('2d');
+          if (pieChartInstance) pieChartInstance.destroy();
+          const unpaidYear = Math.max(0, yearTotal - yearPaid);
+          pieChartInstance = new Chart(pieCtx, {
+            type: 'doughnut',
+            data: {
+              labels: ['จ่ายแล้ว', 'ยังค้างจ่าย'],
+              datasets: [{
+                data: [yearPaid, unpaidYear],
+                backgroundColor: ['#10b981', '#f43f5e'],
+                borderWidth: 0
+              }]
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: {
+                legend: { position: 'bottom', labels: { color: '#94a3b8', font: { size: 11 } } }
+              }
+            }
+          });
+        }
+      } catch (err) {
+        console.error("Chart render error:", err);
       }
-
-      document.getElementById('yearTotalAmount').innerText = formatCurrency(yearTotal);
-      document.getElementById('yearPaidAmount').innerText = formatCurrency(yearPaid);
-      document.getElementById('yearAverageMonth').innerText = formatCurrency(monthsWithData > 0 ? (yearTotal / monthsWithData) : 0);
-
-      const barCtx = document.getElementById('monthlyBarChart').getContext('2d');
-      if (barChartInstance) barChartInstance.destroy();
-      barChartInstance = new Chart(barCtx, {
-        type: 'bar',
-        data: {
-          labels: ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'],
-          datasets: [{
-            label: 'ยอดค่าใช้จ่าย (บาท)',
-            data: monthlyTotals,
-            backgroundColor: 'rgba(99, 102, 241, 0.7)',
-            borderColor: 'rgb(99, 102, 241)',
-            borderRadius: 8,
-            borderWidth: 1
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: { legend: { display: false } },
-          scales: {
-            y: { ticks: { color: '#64748b' }, grid: { color: 'rgba(51, 65, 85, 0.3)' } },
-            x: { ticks: { color: '#64748b' }, grid: { display: false } }
-          }
-        }
-      });
-
-      const pieCtx = document.getElementById('statusPieChart').getContext('2d');
-      if (pieChartInstance) pieChartInstance.destroy();
-      const unpaidYear = Math.max(0, yearTotal - yearPaid);
-      pieChartInstance = new Chart(pieCtx, {
-        type: 'doughnut',
-        data: {
-          labels: ['จ่ายแล้ว', 'ยังค้างจ่าย'],
-          datasets: [{
-            data: [yearPaid, unpaidYear],
-            backgroundColor: ['#10b981', '#f43f5e'],
-            borderWidth: 0
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: { position: 'bottom', labels: { color: '#94a3b8', font: { size: 11 } } }
-          }
-        }
-      });
     }
 
     function render() {
-      let bills = getBills();
-      const container = document.getElementById('billContainer');
-      container.innerHTML = '';
+      try {
+        let bills = getBills();
+        const container = document.getElementById('billContainer');
+        if (!container) return;
+        container.innerHTML = '';
 
-      let total = 0;
-      let paidTotal = 0;
-      bills.forEach(item => {
-        total += item.amount;
-        if (item.paid) paidTotal += item.amount;
-      });
-
-      const searchQuery = (document.getElementById('searchInput')?.value || '').trim().toLowerCase();
-      if (searchQuery) {
-        bills = bills.filter(b => b.title.toLowerCase().includes(searchQuery));
-      }
-
-      if (currentFilter === 'paid') {
-        bills = bills.filter(b => b.paid);
-      } else if (currentFilter === 'unpaid') {
-        bills = bills.filter(b => !b.paid);
-      }
-
-      if (bills.length === 0) {
-        container.innerHTML = `
-          <div class="text-center py-12 glass-card rounded-2xl text-slate-500 border-dashed border-2 border-slate-700/50">
-            <p class="text-xs">ยังไม่มีรายการบิลในเงื่อนไขนี้</p>
-          </div>
-        `;
-      } else {
+        let total = 0;
+        let paidTotal = 0;
         bills.forEach(item => {
-          const card = document.createElement('div');
-          card.className = `flex items-center justify-between p-3.5 rounded-2xl glass-card transition-all duration-200 ${
-            item.paid ? 'opacity-60 bg-slate-900/30' : 'hover:border-slate-600'
-          }`;
+          total += (item.amount || 0);
+          if (item.paid) paidTotal += (item.amount || 0);
+        });
 
-          card.innerHTML = `
-            <div class="flex-1 pr-3">
-              <div class="flex items-center space-x-2">
-                <span class="text-xs font-semibold text-white ${item.paid ? 'line-through text-slate-500' : ''}">
-                  ${item.title}
-                </span>
-                <span class="text-[9px] px-2 py-0.5 rounded-full font-medium ${
-                  item.paid 
-                    ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30' 
-                    : 'bg-amber-500/15 text-amber-300 border border-amber-500/30'
-                }">
-                  ${item.paid ? 'เคลียร์แล้ว' : 'รอชำระ'}
-                </span>
-              </div>
-              <p class="text-[10px] text-slate-400 mt-0.5 font-normal">
-                ${item.dueDate ? `กำหนดชำระ: ${item.dueDate}` : 'ไม่ได้ระบุวันครบกำหนด'}
-              </p>
-            </div>
+        const searchEl = document.getElementById('searchInput');
+        const searchQuery = (searchEl ? searchEl.value : '').trim().toLowerCase();
+        if (searchQuery) {
+          bills = bills.filter(b => (b.title || '').toLowerCase().includes(searchQuery));
+        }
 
-            <div class="flex items-center space-x-2.5">
-              <p class="text-xs font-bold ${item.paid ? 'text-slate-500 line-through' : 'text-indigo-400'}">
-                ${formatCurrency(item.amount)}
-              </p>
-              <button onclick="togglePaid(${item.id})" class="px-2.5 py-1 rounded-xl text-[11px] font-medium transition active:scale-95 ${
-                item.paid 
-                  ? 'bg-slate-700/60 text-slate-400 hover:bg-slate-700' 
-                  : 'bg-emerald-600 text-white hover:bg-emerald-500 shadow-sm shadow-emerald-600/30'
-              }">
-                ${item.paid ? 'ยกเลิก' : 'จ่ายแล้ว'}
-              </button>
-              <button onclick="openModal(${item.id})" class="p-1 rounded-lg text-slate-400 hover:text-white transition">
-                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
-              </button>
-              <button onclick="deleteBill(${item.id})" class="p-1 rounded-lg text-slate-500 hover:text-rose-400 transition">
-                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-              </button>
+        if (currentFilter === 'paid') {
+          bills = bills.filter(b => b.paid);
+        } else if (currentFilter === 'unpaid') {
+          bills = bills.filter(b => !b.paid);
+        }
+
+        if (bills.length === 0) {
+          container.innerHTML = `
+            <div class="text-center py-12 glass-card rounded-2xl text-slate-500 border-dashed border-2 border-slate-700/50">
+              <p class="text-xs">ยังไม่มีรายการบิลในเงื่อนไขนี้</p>
             </div>
           `;
-          container.appendChild(card);
-        });
-      }
+        } else {
+          bills.forEach(item => {
+            const card = document.createElement('div');
+            card.className = `flex items-center justify-between p-3.5 rounded-2xl glass-card transition-all duration-200 ${
+              item.paid ? 'opacity-60 bg-slate-900/30' : 'hover:border-slate-600'
+            }`;
 
-      document.getElementById('totalSum').innerText = formatCurrency(total);
-      document.getElementById('paidSum').innerText = formatCurrency(paidTotal);
-      document.getElementById('remainSum').innerText = formatCurrency(Math.max(0, total - paidTotal));
+            card.innerHTML = `
+              <div class="flex-1 pr-3">
+                <div class="flex items-center space-x-2">
+                  <span class="text-xs font-semibold text-white ${item.paid ? 'line-through text-slate-500' : ''}">
+                    ${item.title}
+                  </span>
+                  <span class="text-[9px] px-2 py-0.5 rounded-full font-medium ${
+                    item.paid 
+                      ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30' 
+                      : 'bg-amber-500/15 text-amber-300 border border-amber-500/30'
+                  }">
+                    ${item.paid ? 'เคลียร์แล้ว' : 'รอชำระ'}
+                  </span>
+                </div>
+                <p class="text-[10px] text-slate-400 mt-0.5 font-normal">
+                  ${item.dueDate ? `กำหนดชำระ: ${item.dueDate}` : 'ไม่ได้ระบุวันครบกำหนด'}
+                </p>
+              </div>
+
+              <div class="flex items-center space-x-2.5">
+                <p class="text-xs font-bold ${item.paid ? 'text-slate-500 line-through' : 'text-indigo-400'}">
+                  ${formatCurrency(item.amount)}
+                </p>
+                <button onclick="togglePaid(${item.id})" class="px-2.5 py-1 rounded-xl text-[11px] font-medium transition active:scale-95 ${
+                  item.paid 
+                    ? 'bg-slate-700/60 text-slate-400 hover:bg-slate-700' 
+                    : 'bg-emerald-600 text-white hover:bg-emerald-500 shadow-sm shadow-emerald-600/30'
+                }">
+                  ${item.paid ? 'ยกเลิก' : 'จ่ายแล้ว'}
+                </button>
+                <button onclick="openModal(${item.id})" class="p-1 rounded-lg text-slate-400 hover:text-white transition">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
+                </button>
+                <button onclick="deleteBill(${item.id})" class="p-1 rounded-lg text-slate-500 hover:text-rose-400 transition">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+              </div>
+            `;
+            container.appendChild(card);
+          });
+        }
+
+        const totalEl = document.getElementById('totalSum');
+        const paidEl = document.getElementById('paidSum');
+        const remainEl = document.getElementById('remainSum');
+        if (totalEl) totalEl.innerText = formatCurrency(total);
+        if (paidEl) paidEl.innerText = formatCurrency(paidTotal);
+        if (remainEl) remainEl.innerText = formatCurrency(Math.max(0, total - paidTotal));
+      } catch (err) {
+        console.error("Render error:", err);
+      }
     }
 
-    // Startup
-    applySavedTheme();
-    initPinLock();
-    updateMonthHeader();
-    render();
+    // Startup Execution (Wait for DOM)
+    window.addEventListener('DOMContentLoaded', () => {
+      applySavedTheme();
+      initPinLock();
+      updateMonthHeader();
+      render();
+    });
   </script>
 </body>
 </html>
