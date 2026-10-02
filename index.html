@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ระบบเช็คบิลรายเดือน - Bill Tracker</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card-bg: #1e293b;
+      --border: #334155;
+      --primary: #38bdf8;
+      --primary-hover: #0284c7;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Kanit', sans-serif; }
+    body { background-color: var(--bg); color: var(--text); min-height: 100vh; padding: 24px 16px; display: flex; justify-content: center; }
+    .container { width: 100%; max-width: 850px; }
+    header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 12px; }
+    h1 { font-size: 1.6rem; font-weight: 600; color: var(--text); }
+    .header-actions { display: flex; gap: 8px; }
+    .month-nav {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    .month-display { font-size: 1.25rem; font-weight: 600; color: var(--primary); }
+    .nav-btn {
+      background: #0f172a;
+      color: var(--text);
+      border: 1px solid var(--border);
+      padding: 8px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+    .nav-btn:hover { border-color: var(--primary); color: var(--primary); }
+    .summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 24px; }
+    .summary-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 16px; text-align: left; }
+    .summary-card p { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 4px; }
+    .summary-card h3 { font-size: 1.4rem; font-weight: 600; }
+    .text-success { color: var(--success); }
+    .text-danger { color: var(--danger); }
+    .text-primary { color: var(--primary); }
+    .action-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+    .btn-primary { background: var(--primary); color: #000; border: none; padding: 10px 18px; border-radius: 8px; font-weight: 600; cursor: pointer; transition: 0.2s; }
+    .btn-primary:hover { background: var(--primary-hover); }
+    .btn-danger-outline { background: transparent; color: var(--danger); border: 1px solid var(--danger); padding: 8px 12px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; }
+    .btn-danger-outline:hover { background: rgba(239, 68, 68, 0.1); }
+    .bill-list { display: flex; flex-direction: column; gap: 12px; }
+    .bill-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      transition: all 0.2s;
+    }
+    .bill-card.paid { opacity: 0.7; border-color: rgba(16, 185, 129, 0.3); background: rgba(16, 185, 129, 0.04); }
+    .bill-info { flex: 1; }
+    .bill-title { font-size: 1.1rem; font-weight: 500; margin-bottom: 4px; display: flex; align-items: center; gap: 8px; }
+    .bill-meta { font-size: 0.85rem; color: var(--text-muted); }
+    .bill-amount { font-size: 1.25rem; font-weight: 600; color: var(--text); min-width: 110px; text-align: right; }
+    .status-badge { display: inline-block; font-size: 0.75rem; padding: 2px 8px; border-radius: 6px; font-weight: 500; }
+    .status-paid { background: rgba(16, 185, 129, 0.2); color: var(--success); }
+    .status-pending { background: rgba(245, 158, 11, 0.2); color: var(--warning); }
+    .btn-check {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      padding: 8px 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      transition: 0.2s;
+    }
+    .btn-check:hover { border-color: var(--success); color: var(--success); }
+    .btn-check.is-paid { background: var(--success); color: #000; border-color: var(--success); font-weight: 600; }
+    .btn-del { background: transparent; border: none; color: #64748b; cursor: pointer; padding: 6px; font-size: 1.1rem; }
+    .btn-del:hover { color: var(--danger); }
+    .empty-state { text-align: center; padding: 48px 16px; color: var(--text-muted); border: 2px dashed var(--border); border-radius: 12px; }
+    .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); justify-content: center; align-items: center; padding: 16px; z-index: 50; }
+    .modal-content { background: var(--card-bg); border: 1px solid var(--border); border-radius: 14px; width: 100%; max-width: 420px; padding: 24px; }
+    .modal-title { font-size: 1.2rem; font-weight: 600; margin-bottom: 16px; }
+    .form-group { margin-bottom: 14px; }
+    .form-group label { display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 6px; }
+    .form-group input { width: 100%; padding: 10px 12px; background: #0f172a; border: 1px solid var(--border); border-radius: 8px; color: var(--text); outline: none; }
+    .form-group input:focus { border-color: var(--primary); }
+    .modal-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 20px; }
+    .btn-secondary { background: #334155; color: var(--text); border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer; }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <header>
+    <div>
+      <h1>📋 ระบบเช็คบิลรายเดือน</h1>
+      <p style="font-size:0.85rem; color:var(--text-muted)">บันทึกและตรวจสอบสถานะการชำระเงินในแต่ละเดือน</p>
+    </div>
+    <div class="header-actions">
+      <button class="btn-danger-outline" onclick="resetAllData()">🗑️ ล้างข้อมูลทั้งหมด</button>
+    </div>
+  </header>
+
+  <!-- สลับเดือน -->
+  <div class="month-nav">
+    <button class="nav-btn" onclick="changeMonth(-1)">‹ เดือนก่อนหน้า</button>
+    <div class="month-display" id="currentMonthLabel">กำลังโหลด...</div>
+    <button class="nav-btn" onclick="changeMonth(1)">เดือนถัดไป ›</button>
+  </div>
+
+  <!-- แดชบอร์ดสรุปยอด -->
+  <div class="summary-grid">
+    <div class="summary-card">
+      <p>ยอดรวมที่ต้องจ่าย</p>
+      <h3 id="totalSum" class="text-primary">฿0</h3>
+    </div>
+    <div class="summary-card">
+      <p>จ่ายเรียบร้อยแล้ว</p>
+      <h3 id="paidSum" class="text-success">฿0</h3>
+    </div>
+    <div class="summary-card">
+      <p>ค้างจ่าย / ยังไม่จ่าย</p>
+      <h3 id="remainSum" class="text-danger">฿0</h3>
+    </div>
+  </div>
+
+  <!-- ปุ่มเพิ่มบิล -->
+  <div class="action-bar">
+    <h3 style="font-size: 1.1rem; font-weight: 500;">รายการบิลในเดือนนี้</h3>
+    <button class="btn-primary" onclick="openAddModal()">+ เพิ่มบิลใหม่</button>
+  </div>
+
+  <div class="bill-list" id="billListContainer"></div>
+</div>
+
+<div class="modal-overlay" id="addModal">
+  <div class="modal-content">
+    <h3 class="modal-title">เพิ่มรายการบิล</h3>
+    <form id="addBillForm" onsubmit="handleCreateBill(event)">
+      <div class="form-group">
+        <label>ชื่อบิล / รายการค่าใช้จ่าย</label>
+        <input type="text" id="billName" placeholder="เช่น ค่าเน็ต, ค่าน้ำ, ค่าผ่อนบ้าน" required>
+      </div>
+      <div class="form-group">
+        <label>จำนวนเงิน (บาท)</label>
+        <input type="number" id="billAmount" placeholder="เช่น 599 หรือ 0 หากไม่คงที่" min="0" step="any" required>
+      </div>
+      <div class="form-group">
+        <label>กำหนดจ่ายทุกวันที่ (1 - 31)</label>
+        <input type="number" id="billDueDay" placeholder="เช่น 5, 25" min="1" max="31" required>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn-secondary" onclick="closeAddModal()">ยกเลิก</button>
+        <button type="submit" class="btn-primary">บันทึก</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  let viewDate = new Date();
+  let bills = JSON.parse(localStorage.getItem('bill_tracker_items')) || [];
+  let payments = JSON.parse(localStorage.getItem('bill_tracker_payments')) || {};
+
+  function getMonthKey(date) {
+    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+  }
+
+  function formatCurrency(num) {
+    return '฿' + Number(num).toLocaleString('th-TH', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
+  }
+
+  function getThaiMonthLabel(date) {
+    const thaiMonths = ["มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน", "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม"];
+    return `${thaiMonths[date.getMonth()]} ${date.getFullYear() + 543}`;
+  }
+
+  function changeMonth(delta) {
+    viewDate.setMonth(viewDate.getMonth() + delta);
+    render();
+  }
+
+  function openAddModal() {
+    document.getElementById('addBillForm').reset();
+    document.getElementById('addModal').style.display = 'flex';
+  }
+
+  function closeAddModal() {
+    document.getElementById('addModal').style.display = 'none';
+  }
+
+  function handleCreateBill(e) {
+    e.preventDefault();
+    const name = document.getElementById('billName').value.trim();
+    const amount = parseFloat(document.getElementById('billAmount').value) || 0;
+    const dueDay = parseInt(document.getElementById('billDueDay').value) || 1;
+
+    bills.push({
+      id: 'b_' + Date.now(),
+      name,
+      amount,
+      dueDay
+    });
+    saveData();
+    closeAddModal();
+    render();
+  }
+
+  function togglePayment(billId) {
+    const mKey = getMonthKey(viewDate);
+    if (!payments[mKey]) payments[mKey] = {};
+
+    if (payments[mKey][billId]) {
+      delete payments[mKey][billId];
+    } else {
+      payments[mKey][billId] = {
+        paidAt: new Date().toLocaleDateString('th-TH')
+      };
+    }
+    saveData();
+    render();
+  }
+
+  function deleteBill(billId) {
+    if (confirm('ต้องการลบบิลนี้ออกจากระบบหรือไม่?')) {
+      bills = bills.filter(b => b.id !== billId);
+      saveData();
+      render();
+    }
+  }
+
+  function resetAllData() {
+    if (confirm('คุณแน่ใจหรือไม่ว่าต้องการล้างข้อมูลทั้งหมดให้เป็นศูนย์? ข้อมูลที่เคยบันทึกไว้จะหายทั้งหมด')) {
+      bills = [];
+      payments = {};
+      saveData();
+      render();
+    }
+  }
+
+  function saveData() {
+    localStorage.setItem('bill_tracker_items', JSON.stringify(bills));
+    localStorage.setItem('bill_tracker_payments', JSON.stringify(payments));
+  }
+
+  function render() {
+    const mKey = getMonthKey(viewDate);
+    document.getElementById('currentMonthLabel').innerText = getThaiMonthLabel(viewDate);
+
+    const mPayments = payments[mKey] || {};
+    let total = 0;
+    let paidTotal = 0;
+
+    const container = document.getElementById('billListContainer');
+    container.innerHTML = '';
+
+    if (bills.length === 0) {
+      container.innerHTML = `
+        <div class="empty-state">
+          <p style="font-size: 1.1rem; margin-bottom: 8px;">ยังไม่มีรายการบิลในระบบ</p>
+          <p style="font-size: 0.9rem;">กดปุ่ม <b>"+ เพิ่มบิลใหม่"</b> เพื่อเริ่มใส่รายการค่าใช้จ่ายของคุณ</p>
+        </div>
+      `;
+    } else {
+      bills.forEach(bill => {
+        total += bill.amount;
+        const isPaid = !!mPayments[bill.id];
+        if (isPaid) paidTotal += bill.amount;
+
+        const card = document.createElement('div');
+        card.className = `bill-card ${isPaid ? 'paid' : ''}`;
+        card.innerHTML = `
+          <div class="bill-info">
+            <div class="bill-title">
+              <span>${bill.name}</span>
+              <span class="status-badge ${isPaid ? 'status-paid' : 'status-pending'}">
+                ${isPaid ? '✓ จ่ายแล้ว' : 'รอชำระ'}
+              </span>
+            </div>
+            <div class="bill-meta">
+              ครบกำหนดทุกวันที่ ${bill.dueDay} ของเดือน
+              ${isPaid ? `(บันทึกเมื่อ: ${mPayments[bill.id].paidAt})` : ''}
+            </div>
+          </div>
+          <div class="bill-amount">${formatCurrency(bill.amount)}</div>
+          <button class="btn-check ${isPaid ? 'is-paid' : ''}" onclick="togglePayment('${bill.id}')">
+            ${isPaid ? '✓ จ่ายแล้ว' : 'ติ๊กจ่าย'}
+          </button>
+          <button class="btn-del" title="ลบรายการ" onclick="deleteBill('${bill.id}')">✕</button>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    const remainTotal = Math.max(0, total - paidTotal);
+    document.getElementById('totalSum').innerText = formatCurrency(total);
+    document.getElementById('paidSum').innerText = formatCurrency(paidTotal);
+    document.getElementById('remainSum').innerText = formatCurrency(remainTotal);
+  }
+
+  render();
+</script>
+</body>
+</html>
