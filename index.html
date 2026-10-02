@@ -8,12 +8,12 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    body { font-family: 'Prompt', 'Plus Jakarta Sans', sans-serif; }
+    body { font-family: 'Prompt', 'Plus Jakarta Sans', sans-serif; transition: background-color 0.4s ease, color 0.4s ease; }
     .glass-card {
-      background: rgba(30, 41, 59, 0.7);
+      background: var(--card-bg, rgba(30, 41, 59, 0.7));
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
-      border: 1px solid rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--border-color, rgba(255, 255, 255, 0.08));
     }
     @keyframes shake {
       0%, 100% { transform: translateX(0); }
@@ -23,22 +23,54 @@
     .shake-animation {
       animation: shake 0.35s ease-in-out;
     }
+
+    /* THEMES */
+    body.theme-midnight {
+      background-color: #0b0f19;
+      --card-bg: rgba(30, 41, 59, 0.7);
+      --border-color: rgba(255, 255, 255, 0.08);
+      --glow-1: rgba(99, 102, 241, 0.2);
+      --glow-2: rgba(139, 92, 246, 0.15);
+    }
+    body.theme-sunset {
+      background-color: #1a0b1e;
+      --card-bg: rgba(53, 20, 56, 0.65);
+      --border-color: rgba(244, 114, 182, 0.15);
+      --glow-1: rgba(236, 72, 153, 0.25);
+      --glow-2: rgba(249, 115, 22, 0.18);
+    }
+    body.theme-emerald {
+      background-color: #061913;
+      --card-bg: rgba(13, 43, 34, 0.65);
+      --border-color: rgba(52, 211, 153, 0.15);
+      --glow-1: rgba(16, 185, 129, 0.25);
+      --glow-2: rgba(45, 212, 191, 0.18);
+    }
+    body.theme-minimal {
+      background-color: #f8fafc;
+      color: #0f172a;
+      --card-bg: rgba(255, 255, 255, 0.85);
+      --border-color: rgba(226, 232, 240, 0.9);
+      --glow-1: rgba(99, 102, 241, 0.08);
+      --glow-2: rgba(148, 163, 184, 0.12);
+    }
+    body.theme-minimal .text-white { color: #0f172a !important; }
+    body.theme-minimal .text-slate-400 { color: #64748b !important; }
+    body.theme-minimal .glass-card { box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05); }
   </style>
 </head>
-<body class="bg-[#0b0f19] text-slate-100 min-h-screen pb-24 selection:bg-indigo-500 selection:text-white">
+<body class="theme-midnight text-slate-100 min-h-screen pb-24 selection:bg-indigo-500 selection:text-white">
 
   <!-- Ambient Light Background -->
   <div class="fixed inset-0 overflow-hidden pointer-events-none z-0">
-    <div class="absolute -top-40 left-1/2 -translate-x-1/2 w-96 h-96 bg-indigo-600/20 rounded-full blur-[120px]"></div>
-    <div class="absolute top-1/2 -left-20 w-80 h-80 bg-violet-600/15 rounded-full blur-[100px]"></div>
-    <div class="absolute bottom-10 right-0 w-80 h-80 bg-emerald-500/10 rounded-full blur-[100px]"></div>
+    <div id="glow1" class="absolute -top-40 left-1/2 -translate-x-1/2 w-96 h-96 rounded-full blur-[120px] transition-all duration-500" style="background: var(--glow-1);"></div>
+    <div id="glow2" class="absolute top-1/2 -left-20 w-80 h-80 rounded-full blur-[100px] transition-all duration-500" style="background: var(--glow-2);"></div>
   </div>
 
   <!-- PIN LOCK SCREEN (iOS 6-Digit Style) -->
-  <div id="pinLockScreen" class="fixed inset-0 bg-[#0b0f19]/90 backdrop-blur-2xl z-[100] flex flex-col items-center justify-center p-4">
+  <div id="pinLockScreen" class="fixed inset-0 bg-[#0b0f19]/95 backdrop-blur-2xl z-[100] flex flex-col items-center justify-center p-4">
     <div id="pinPadContainer" class="w-full max-w-xs flex flex-col items-center">
       
-      <!-- Icon Glow -->
       <div class="w-16 h-16 rounded-3xl bg-gradient-to-tr from-indigo-500 to-violet-500 flex items-center justify-center shadow-lg shadow-indigo-500/30 mb-4 ring-4 ring-indigo-500/20">
         <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
@@ -48,7 +80,7 @@
       <h2 id="pinPromptTitle" class="text-xl font-bold tracking-tight text-white mb-1">Passcode</h2>
       <p id="pinPromptSubtitle" class="text-xs text-slate-400 mb-6">ใส่รหัส PIN 6 หลักเพื่อเข้าใช้งาน</p>
 
-      <!-- PIN Indicator Dots (6 Dots) -->
+      <!-- PIN Indicator Dots -->
       <div class="flex items-center space-x-3 mb-8">
         <div id="dot-0" class="w-3.5 h-3.5 rounded-full border-2 border-slate-600 transition-all duration-200"></div>
         <div id="dot-1" class="w-3.5 h-3.5 rounded-full border-2 border-slate-600 transition-all duration-200"></div>
@@ -72,9 +104,7 @@
         <button onclick="clearPin()" class="h-16 rounded-2xl flex items-center justify-center text-xs font-medium text-slate-400 hover:text-white transition">ล้าง</button>
         <button onclick="pressPin('0')" class="h-16 rounded-2xl glass-card text-xl font-semibold hover:bg-slate-700/60 active:scale-95 transition">0</button>
         <button onclick="deletePin()" class="h-16 rounded-2xl flex items-center justify-center text-slate-400 hover:text-white transition">
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2M3 12l6.414 6.414a2 2 0 001.414.586H19a2 2 0 002-2V7a2 2 0 00-2-2h-7.172a2 2 0 00-1.414.586L3 12z"></path>
-          </svg>
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2M3 12l6.414 6.414a2 2 0 001.414.586H19a2 2 0 002-2V7a2 2 0 00-2-2h-7.172a2 2 0 00-1.414.586L3 12z"></path></svg>
         </button>
       </div>
 
@@ -104,6 +134,10 @@
 
       <!-- Quick Actions -->
       <div class="flex items-center space-x-2">
+        <!-- Theme Switcher Button -->
+        <button onclick="cycleTheme()" title="เปลี่ยนพื้นหลัง / ธีม" class="p-2.5 rounded-xl glass-card hover:bg-slate-700/60 text-slate-300 transition hover:scale-105 active:scale-95">
+          🎨
+        </button>
         <button onclick="exportData()" title="สำรองข้อมูล" class="p-2.5 rounded-xl glass-card hover:bg-slate-700/60 text-slate-300 transition hover:scale-105 active:scale-95">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
         </button>
@@ -274,6 +308,21 @@
     let barChartInstance = null;
     let pieChartInstance = null;
 
+    // --- THEME SYSTEM ---
+    const THEMES = ['theme-midnight', 'theme-sunset', 'theme-emerald', 'theme-minimal'];
+    function applySavedTheme() {
+      const savedTheme = localStorage.getItem('app_theme') || 'theme-midnight';
+      document.body.className = `${savedTheme} text-slate-100 min-h-screen pb-24 selection:bg-indigo-500 selection:text-white`;
+    }
+
+    function cycleTheme() {
+      const current = localStorage.getItem('app_theme') || 'theme-midnight';
+      const nextIndex = (THEMES.indexOf(current) + 1) % THEMES.length;
+      const nextTheme = THEMES[nextIndex];
+      localStorage.setItem('app_theme', nextTheme);
+      applySavedTheme();
+    }
+
     // --- PIN LOGIC (iOS 6-Digit Pad) ---
     const PIN_KEY = 'app_pin_code';
     let currentPinInput = '';
@@ -292,7 +341,7 @@
       } else {
         isSettingInitialPin = false;
         document.getElementById('pinPromptTitle').innerText = 'Passcode';
-        document.getElementById('pinPromptSubtitle').innerText = 'ใส่รหัส PIN 6 หลักเพื่อเข้าสู่ระบบ';
+        document.getElementById('pinPromptSubtitle').innerText = 'ใส่รหัส PIN 6 หลักเพื่อเข้าใช้งาน';
       }
       document.getElementById('pinLockScreen').classList.remove('hidden');
     }
@@ -737,6 +786,7 @@
     }
 
     // Startup
+    applySavedTheme();
     initPinLock();
     updateMonthHeader();
     render();
