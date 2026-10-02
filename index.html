@@ -3,125 +3,195 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ระบบเช็คบิลรายเดือน - Bill Tracker</title>
+  <title>⚡ Bill Tracker - Gen Z Edition</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    body { font-family: 'Prompt', sans-serif; }
+    body { font-family: 'Prompt', 'Plus Jakarta Sans', sans-serif; }
+    .glass-card {
+      background: rgba(30, 41, 59, 0.7);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-8px); }
+      40%, 80% { transform: translateX(8px); }
+    }
+    .shake-animation {
+      animation: shake 0.35s ease-in-out;
+    }
   </style>
 </head>
-<body class="bg-[#0f172a] text-slate-100 min-h-screen pb-24">
+<body class="bg-[#0b0f19] text-slate-100 min-h-screen pb-24 selection:bg-indigo-500 selection:text-white">
 
-  <div class="max-w-3xl mx-auto px-4 py-8">
-    <!-- Header -->
-    <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
-      <div class="flex items-center space-x-3">
-        <div class="p-3 bg-blue-600 rounded-2xl shadow-lg shadow-blue-500/30">
+  <!-- Ambient Light Background -->
+  <div class="fixed inset-0 overflow-hidden pointer-events-none z-0">
+    <div class="absolute -top-40 left-1/2 -translate-x-1/2 w-96 h-96 bg-indigo-600/20 rounded-full blur-[120px]"></div>
+    <div class="absolute top-1/2 -left-20 w-80 h-80 bg-violet-600/15 rounded-full blur-[100px]"></div>
+    <div class="absolute bottom-10 right-0 w-80 h-80 bg-emerald-500/10 rounded-full blur-[100px]"></div>
+  </div>
+
+  <!-- PIN LOCK SCREEN (iOS 6-Digit Style) -->
+  <div id="pinLockScreen" class="fixed inset-0 bg-[#0b0f19]/90 backdrop-blur-2xl z-[100] flex flex-col items-center justify-center p-4">
+    <div id="pinPadContainer" class="w-full max-w-xs flex flex-col items-center">
+      
+      <!-- Icon Glow -->
+      <div class="w-16 h-16 rounded-3xl bg-gradient-to-tr from-indigo-500 to-violet-500 flex items-center justify-center shadow-lg shadow-indigo-500/30 mb-4 ring-4 ring-indigo-500/20">
+        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+        </svg>
+      </div>
+
+      <h2 id="pinPromptTitle" class="text-xl font-bold tracking-tight text-white mb-1">Passcode</h2>
+      <p id="pinPromptSubtitle" class="text-xs text-slate-400 mb-6">ใส่รหัส PIN 6 หลักเพื่อเข้าใช้งาน</p>
+
+      <!-- PIN Indicator Dots (6 Dots) -->
+      <div class="flex items-center space-x-3 mb-8">
+        <div id="dot-0" class="w-3.5 h-3.5 rounded-full border-2 border-slate-600 transition-all duration-200"></div>
+        <div id="dot-1" class="w-3.5 h-3.5 rounded-full border-2 border-slate-600 transition-all duration-200"></div>
+        <div id="dot-2" class="w-3.5 h-3.5 rounded-full border-2 border-slate-600 transition-all duration-200"></div>
+        <div id="dot-3" class="w-3.5 h-3.5 rounded-full border-2 border-slate-600 transition-all duration-200"></div>
+        <div id="dot-4" class="w-3.5 h-3.5 rounded-full border-2 border-slate-600 transition-all duration-200"></div>
+        <div id="dot-5" class="w-3.5 h-3.5 rounded-full border-2 border-slate-600 transition-all duration-200"></div>
+      </div>
+
+      <!-- Numeric Keypad Grid -->
+      <div class="grid grid-cols-3 gap-4 w-full px-2">
+        <button onclick="pressPin('1')" class="h-16 rounded-2xl glass-card text-xl font-semibold hover:bg-slate-700/60 active:scale-95 transition">1</button>
+        <button onclick="pressPin('2')" class="h-16 rounded-2xl glass-card text-xl font-semibold hover:bg-slate-700/60 active:scale-95 transition">2</button>
+        <button onclick="pressPin('3')" class="h-16 rounded-2xl glass-card text-xl font-semibold hover:bg-slate-700/60 active:scale-95 transition">3</button>
+        <button onclick="pressPin('4')" class="h-16 rounded-2xl glass-card text-xl font-semibold hover:bg-slate-700/60 active:scale-95 transition">4</button>
+        <button onclick="pressPin('5')" class="h-16 rounded-2xl glass-card text-xl font-semibold hover:bg-slate-700/60 active:scale-95 transition">5</button>
+        <button onclick="pressPin('6')" class="h-16 rounded-2xl glass-card text-xl font-semibold hover:bg-slate-700/60 active:scale-95 transition">6</button>
+        <button onclick="pressPin('7')" class="h-16 rounded-2xl glass-card text-xl font-semibold hover:bg-slate-700/60 active:scale-95 transition">7</button>
+        <button onclick="pressPin('8')" class="h-16 rounded-2xl glass-card text-xl font-semibold hover:bg-slate-700/60 active:scale-95 transition">8</button>
+        <button onclick="pressPin('9')" class="h-16 rounded-2xl glass-card text-xl font-semibold hover:bg-slate-700/60 active:scale-95 transition">9</button>
+        <button onclick="clearPin()" class="h-16 rounded-2xl flex items-center justify-center text-xs font-medium text-slate-400 hover:text-white transition">ล้าง</button>
+        <button onclick="pressPin('0')" class="h-16 rounded-2xl glass-card text-xl font-semibold hover:bg-slate-700/60 active:scale-95 transition">0</button>
+        <button onclick="deletePin()" class="h-16 rounded-2xl flex items-center justify-center text-slate-400 hover:text-white transition">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2M3 12l6.414 6.414a2 2 0 001.414.586H19a2 2 0 002-2V7a2 2 0 00-2-2h-7.172a2 2 0 00-1.414.586L3 12z"></path>
+          </svg>
+        </button>
+      </div>
+
+      <p id="pinErrorMsg" class="text-xs text-rose-400 mt-6 min-h-[1rem] font-medium tracking-wide"></p>
+    </div>
+  </div>
+
+  <!-- MAIN APP CONTAINER -->
+  <div class="relative z-10 max-w-2xl mx-auto px-4 py-8">
+    
+    <!-- Top Bar -->
+    <header class="flex items-center justify-between gap-4 mb-8">
+      <div class="flex items-center space-x-3.5">
+        <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-indigo-500 via-indigo-600 to-violet-500 flex items-center justify-center shadow-lg shadow-indigo-500/25">
           <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
           </svg>
         </div>
         <div>
-          <h1 class="text-xl font-bold tracking-tight">ระบบเช็คบิลรายเดือน</h1>
-          <p class="text-xs text-slate-400">บันทึกและตรวจสอบสถานะการชำระเงินในแต่ละเดือน</p>
+          <div class="flex items-center space-x-2">
+            <h1 class="text-xl font-bold tracking-tight text-white">Bill Tracker</h1>
+            <span class="text-[10px] font-semibold tracking-wider uppercase px-2 py-0.5 rounded-full bg-indigo-500/20 text-indigo-400 border border-indigo-500/30">Pro</span>
+          </div>
+          <p class="text-xs text-slate-400">เช็ครายจ่ายประจำเดือนแบบเรียลไทม์</p>
         </div>
       </div>
-      
-      <!-- Backup / Reset Actions -->
-      <div class="flex items-center space-x-2 text-xs">
-        <button onclick="exportData()" title="ดาวน์โหลดไฟล์สำรองข้อมูล" class="px-2.5 py-1.5 rounded-xl bg-slate-800 border border-slate-700 hover:bg-slate-700 text-slate-300 transition flex items-center space-x-1">
-          <span>💾 สำรองข้อมูล</span>
+
+      <!-- Quick Actions -->
+      <div class="flex items-center space-x-2">
+        <button onclick="exportData()" title="สำรองข้อมูล" class="p-2.5 rounded-xl glass-card hover:bg-slate-700/60 text-slate-300 transition hover:scale-105 active:scale-95">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
         </button>
-        <label title="นำเข้าไฟล์สำรองข้อมูล" class="px-2.5 py-1.5 rounded-xl bg-slate-800 border border-slate-700 hover:bg-slate-700 text-slate-300 transition cursor-pointer flex items-center space-x-1">
-          <span>📥 นำเข้า</span>
+        <label title="นำเข้าข้อมูล" class="p-2.5 rounded-xl glass-card hover:bg-slate-700/60 text-slate-300 transition hover:scale-105 active:scale-95 cursor-pointer">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
           <input type="file" id="importFileInput" accept=".json" class="hidden" onchange="importData(event)">
         </label>
-        <button onclick="resetMonthData()" class="text-rose-400/80 hover:text-rose-300 ml-2">
-          ล้างเดือนนี้
+        <button onclick="changePinSetting()" title="เปลี่ยนรหัส PIN" class="p-2.5 rounded-xl glass-card hover:bg-slate-700/60 text-slate-300 transition hover:scale-105 active:scale-95">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"></path></svg>
         </button>
       </div>
-    </div>
+    </header>
 
-    <!-- Month Navigation & View Toggle -->
-    <div class="flex flex-wrap items-center justify-between gap-3 bg-slate-800/80 backdrop-blur border border-slate-700/80 rounded-2xl p-2.5 mb-6">
-      <div class="flex items-center space-x-2">
-        <button onclick="changeMonth(-1)" class="px-3 py-1.5 rounded-xl bg-slate-700/50 hover:bg-slate-700 text-xs font-medium transition">
-          ◀ เดือนก่อนหน้า
-        </button>
-        <span id="currentMonthLabel" class="text-base font-semibold text-blue-400 px-2"></span>
-        <button onclick="changeMonth(1)" class="px-3 py-1.5 rounded-xl bg-slate-700/50 hover:bg-slate-700 text-xs font-medium transition">
-          เดือนถัดไป ▶
-        </button>
+    <!-- Month Picker Pill -->
+    <div class="flex items-center justify-between glass-card rounded-2xl p-2 mb-6">
+      <button onclick="changeMonth(-1)" class="w-10 h-10 rounded-xl flex items-center justify-center hover:bg-slate-700/50 text-slate-300 transition active:scale-95">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+      </button>
+      <div class="text-center">
+        <span id="currentMonthLabel" class="text-sm font-bold text-white tracking-wide"></span>
       </div>
-
-      <button onclick="toggleAnalyticsModal()" class="px-3 py-1.5 rounded-xl bg-indigo-600/80 hover:bg-indigo-600 text-white text-xs font-medium transition shadow-md shadow-indigo-600/20 flex items-center space-x-1.5">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"></path>
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"></path>
-        </svg>
-        <span>ดูกราฟและสถิติภาพรวม</span>
+      <button onclick="changeMonth(1)" class="w-10 h-10 rounded-xl flex items-center justify-center hover:bg-slate-700/50 text-slate-300 transition active:scale-95">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
       </button>
     </div>
 
     <!-- Summary Cards -->
     <div class="grid grid-cols-3 gap-3 mb-6">
-      <div class="bg-slate-800/60 border border-slate-700/60 rounded-2xl p-4 text-center">
-        <p class="text-xs text-slate-400 mb-1">ยอดรวมที่ต้องจ่าย</p>
-        <p id="totalSum" class="text-lg font-bold text-white">฿0.00</p>
+      <div class="glass-card rounded-2xl p-4 text-center">
+        <p class="text-[11px] text-slate-400 font-medium mb-1">ยอดรวมทั้งสิ้น</p>
+        <p id="totalSum" class="text-base font-bold text-white tracking-tight">฿0.00</p>
       </div>
-      <div class="bg-slate-800/60 border border-slate-700/60 rounded-2xl p-4 text-center">
-        <p class="text-xs text-emerald-400 mb-1">จ่ายเรียบร้อยแล้ว</p>
-        <p id="paidSum" class="text-lg font-bold text-emerald-400">฿0.00</p>
+      <div class="glass-card rounded-2xl p-4 text-center ring-1 ring-emerald-500/20 bg-emerald-950/10">
+        <p class="text-[11px] text-emerald-400 font-medium mb-1">เคลียร์แล้ว</p>
+        <p id="paidSum" class="text-base font-bold text-emerald-400 tracking-tight">฿0.00</p>
       </div>
-      <div class="bg-slate-800/60 border border-slate-700/60 rounded-2xl p-4 text-center">
-        <p class="text-xs text-rose-400 mb-1">ค้างจ่าย / ยังไม่จ่าย</p>
-        <p id="remainSum" class="text-lg font-bold text-rose-400">฿0.00</p>
-      </div>
-    </div>
-
-    <!-- Filter & Search Toolbar -->
-    <div class="bg-slate-800/40 border border-slate-700/40 rounded-2xl p-3 mb-4 flex flex-wrap items-center justify-between gap-3">
-      <div class="flex items-center space-x-2 flex-1 min-w-[200px]">
-        <input type="text" id="searchInput" oninput="render()" placeholder="🔍 ค้นหาชื่อรายการบิล..." class="w-full bg-slate-900/80 border border-slate-700/70 rounded-xl px-3 py-1.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-blue-500">
-      </div>
-      <div class="flex items-center space-x-1.5 text-xs">
-        <button onclick="setFilter('all')" id="filterAll" class="px-2.5 py-1.5 rounded-lg bg-blue-600 text-white font-medium transition">ทั้งหมด</button>
-        <button onclick="setFilter('unpaid')" id="filterUnpaid" class="px-2.5 py-1.5 rounded-lg bg-slate-700/50 hover:bg-slate-700 text-slate-300 transition">ยังไม่จ่าย</button>
-        <button onclick="setFilter('paid')" id="filterPaid" class="px-2.5 py-1.5 rounded-lg bg-slate-700/50 hover:bg-slate-700 text-slate-300 transition">จ่ายแล้ว</button>
+      <div class="glass-card rounded-2xl p-4 text-center ring-1 ring-rose-500/20 bg-rose-950/10">
+        <p class="text-[11px] text-rose-400 font-medium mb-1">ยังค้างจ่าย</p>
+        <p id="remainSum" class="text-base font-bold text-rose-400 tracking-tight">฿0.00</p>
       </div>
     </div>
 
-    <!-- Actions & Tools -->
-    <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
-      <h2 class="text-base font-semibold text-slate-200">รายการบิลในเดือนนี้</h2>
+    <!-- Toolbar & Filter -->
+    <div class="flex items-center space-x-2 mb-4">
+      <div class="relative flex-1">
+        <svg class="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+        <input type="text" id="searchInput" oninput="render()" placeholder="ค้นหารายการ..." class="w-full pl-10 pr-3 py-2 text-xs rounded-xl glass-card text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/50">
+      </div>
+      <button onclick="toggleAnalyticsModal()" class="px-3.5 py-2 rounded-xl bg-gradient-to-r from-indigo-500 to-violet-600 text-white text-xs font-semibold hover:opacity-90 transition shadow-md shadow-indigo-500/25 flex items-center space-x-1.5 active:scale-95">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+        <span>สถิติ</span>
+      </button>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="flex items-center justify-between mb-4">
+      <div class="flex items-center space-x-1">
+        <button onclick="setFilter('all')" id="filterAll" class="px-3 py-1 rounded-lg text-xs font-medium bg-indigo-600 text-white transition">ทั้งหมด</button>
+        <button onclick="setFilter('unpaid')" id="filterUnpaid" class="px-3 py-1 rounded-lg text-xs font-medium text-slate-400 hover:text-white transition">ค้างจ่าย</button>
+        <button onclick="setFilter('paid')" id="filterPaid" class="px-3 py-1 rounded-lg text-xs font-medium text-slate-400 hover:text-white transition">จ่ายแล้ว</button>
+      </div>
       <div class="flex items-center space-x-2">
-        <button onclick="copyFromPreviousMonth()" class="flex items-center space-x-1.5 text-xs bg-slate-700/70 hover:bg-slate-700 text-slate-200 px-3 py-2 rounded-xl transition border border-slate-600">
-          <svg class="w-3.5 h-3.5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path>
-          </svg>
-          <span>คัดลอกบิลจากเดือนที่แล้ว</span>
+        <button onclick="copyFromPreviousMonth()" title="ดึงบิลจากเดือนที่แล้ว" class="px-3 py-1.5 rounded-xl glass-card hover:bg-slate-700/60 text-xs text-amber-300 font-medium transition flex items-center space-x-1 border border-amber-500/20 active:scale-95">
+          <span>✨ ดึงบิลเก่า</span>
         </button>
-        <button onclick="openModal()" class="flex items-center space-x-1 text-xs bg-blue-600 hover:bg-blue-500 text-white px-3 py-2 rounded-xl font-medium transition shadow-md shadow-blue-600/30">
-          <span>+ เพิ่มบิลใหม่</span>
+        <button onclick="openModal()" class="px-3.5 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-xs font-semibold text-white transition shadow-md shadow-blue-600/30 active:scale-95">
+          + เพิ่มบิล
         </button>
       </div>
     </div>
 
-    <!-- Bill List Container -->
-    <div id="billContainer" class="space-y-3"></div>
+    <!-- Bills List -->
+    <div id="billContainer" class="space-y-2.5"></div>
 
+    <div class="text-center mt-8">
+      <button onclick="resetMonthData()" class="text-xs text-rose-400/60 hover:text-rose-400 transition">
+        ล้างข้อมูลเดือนนี้ทั้งหมด
+      </button>
+    </div>
   </div>
 
-  <!-- Modal Form (Add / Edit) -->
-  <div id="modalOverlay" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-    <div class="bg-slate-800 border border-slate-700 w-full max-w-md rounded-2xl p-6 shadow-2xl">
-      <div class="flex items-center justify-between mb-4">
-        <h3 id="modalTitle" class="text-base font-bold text-white">เพิ่มรายการบิล</h3>
+  <!-- ADD / EDIT MODAL -->
+  <div id="modalOverlay" class="fixed inset-0 bg-black/75 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
+    <div class="glass-card w-full max-w-sm rounded-3xl p-6 shadow-2xl border border-slate-700">
+      <div class="flex items-center justify-between mb-5">
+        <h3 id="modalTitle" class="text-base font-bold text-white tracking-wide">เพิ่มรายการบิล</h3>
         <button onclick="closeModal()" class="text-slate-400 hover:text-white">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-          </svg>
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
         </button>
       </div>
 
@@ -129,71 +199,63 @@
 
       <div class="space-y-4">
         <div>
-          <label class="block text-xs text-slate-400 mb-1">ชื่อรายการบิล</label>
-          <input type="text" id="billTitle" placeholder="เช่น ค่าไฟ หม้อตา, ค่าไฟ หม้อแม่, ค่าเน็ต" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-blue-500">
+          <label class="block text-xs font-medium text-slate-400 mb-1.5">ชื่อรายการบิล</label>
+          <input type="text" id="billTitle" placeholder="เช่น ค่าไฟ หม้อแม่, ค่าเน็ต" class="w-full bg-slate-900/90 border border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-indigo-500">
         </div>
         <div>
-          <label class="block text-xs text-slate-400 mb-1">จำนวนเงิน (บาท)</label>
-          <input type="number" step="0.01" id="billAmount" placeholder="0.00" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-blue-500">
+          <label class="block text-xs font-medium text-slate-400 mb-1.5">จำนวนเงิน (บาท)</label>
+          <input type="number" step="0.01" id="billAmount" placeholder="0.00" class="w-full bg-slate-900/90 border border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-indigo-500">
         </div>
         <div>
-          <label class="block text-xs text-slate-400 mb-1">วันครบกำหนด (ไม่บังคับ)</label>
-          <input type="text" id="billDueDate" placeholder="เช่น วันที่ 21 ของเดือน" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-blue-500">
+          <label class="block text-xs font-medium text-slate-400 mb-1.5">วันครบกำหนด (ไม่บังคับ)</label>
+          <input type="text" id="billDueDate" placeholder="เช่น วันที่ 21 ของเดือน" class="w-full bg-slate-900/90 border border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-indigo-500">
         </div>
-        <div class="flex items-center justify-end space-x-2 pt-2">
-          <button onclick="closeModal()" class="px-4 py-2 rounded-xl bg-slate-700 text-xs text-slate-300 hover:bg-slate-600 transition">
-            ยกเลิก
-          </button>
-          <button onclick="saveBill()" class="px-4 py-2 rounded-xl bg-blue-600 text-xs text-white hover:bg-blue-500 font-medium transition">
-            บันทึก
-          </button>
+        <div class="flex items-center justify-end space-x-2 pt-3">
+          <button onclick="closeModal()" class="px-4 py-2 rounded-xl text-xs text-slate-400 hover:text-white transition">ยกเลิก</button>
+          <button onclick="saveBill()" class="px-5 py-2 rounded-xl bg-gradient-to-r from-indigo-500 to-violet-600 text-xs font-semibold text-white shadow-md shadow-indigo-500/25 transition">บันทึก</button>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Analytics / Charts Modal -->
-  <div id="analyticsModal" class="fixed inset-0 bg-black/75 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-    <div class="bg-slate-800 border border-slate-700 w-full max-w-2xl rounded-2xl p-6 shadow-2xl max-h-[90vh] overflow-y-auto">
-      <div class="flex items-center justify-between mb-4 border-b border-slate-700 pb-3">
+  <!-- ANALYTICS MODAL -->
+  <div id="analyticsModal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
+    <div class="glass-card w-full max-w-xl rounded-3xl p-6 shadow-2xl border border-slate-700 max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between mb-5 border-b border-slate-700/60 pb-3">
         <div>
-          <h3 class="text-base font-bold text-white">📊 สถิติและกราฟภาพรวมรายปี</h3>
+          <h3 class="text-base font-bold text-white tracking-wide">สถิติและภาพรวม</h3>
           <p class="text-xs text-slate-400" id="analyticsYearLabel"></p>
         </div>
         <button onclick="toggleAnalyticsModal()" class="text-slate-400 hover:text-white">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-          </svg>
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
         </button>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-        <div class="bg-slate-900/60 p-3 rounded-xl border border-slate-700/60 text-center">
-          <p class="text-xs text-slate-400">ยอดรวมทั้งปี</p>
-          <p id="yearTotalAmount" class="text-base font-bold text-blue-400 mt-1">฿0.00</p>
+      <div class="grid grid-cols-3 gap-3 mb-6">
+        <div class="bg-slate-900/70 p-3.5 rounded-2xl text-center border border-slate-800">
+          <p class="text-[11px] text-slate-400 mb-1">ยอดรวมทั้งปี</p>
+          <p id="yearTotalAmount" class="text-sm font-bold text-indigo-400">฿0.00</p>
         </div>
-        <div class="bg-slate-900/60 p-3 rounded-xl border border-slate-700/60 text-center">
-          <p class="text-xs text-slate-400">จ่ายไปแล้วทั้งปี</p>
-          <p id="yearPaidAmount" class="text-base font-bold text-emerald-400 mt-1">฿0.00</p>
+        <div class="bg-slate-900/70 p-3.5 rounded-2xl text-center border border-slate-800">
+          <p class="text-[11px] text-slate-400 mb-1">เคลียร์แล้ว</p>
+          <p id="yearPaidAmount" class="text-sm font-bold text-emerald-400">฿0.00</p>
         </div>
-        <div class="bg-slate-900/60 p-3 rounded-xl border border-slate-700/60 text-center">
-          <p class="text-xs text-slate-400">เฉลี่ยต่อเดือน</p>
-          <p id="yearAverageMonth" class="text-base font-bold text-amber-400 mt-1">฿0.00</p>
+        <div class="bg-slate-900/70 p-3.5 rounded-2xl text-center border border-slate-800">
+          <p class="text-[11px] text-slate-400 mb-1">เฉลี่ยต่อเดือน</p>
+          <p id="yearAverageMonth" class="text-sm font-bold text-amber-400">฿0.00</p>
         </div>
       </div>
 
-      <!-- Charts Section -->
       <div class="space-y-6">
-        <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-700/60">
-          <h4 class="text-xs font-semibold text-slate-300 mb-3">ยอดรวมค่าใช้จ่ายแต่ละเดือน (12 เดือน)</h4>
-          <div class="relative h-60">
+        <div class="bg-slate-900/70 p-4 rounded-2xl border border-slate-800">
+          <h4 class="text-xs font-semibold text-slate-300 mb-3">กราฟสรุปค่าใช้จ่าย 12 เดือน</h4>
+          <div class="relative h-56">
             <canvas id="monthlyBarChart"></canvas>
           </div>
         </div>
-
-        <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-700/60">
-          <h4 class="text-xs font-semibold text-slate-300 mb-3">สัดส่วนการชำระเงินในปีนี้</h4>
-          <div class="relative h-48 flex justify-center">
+        <div class="bg-slate-900/70 p-4 rounded-2xl border border-slate-800">
+          <h4 class="text-xs font-semibold text-slate-300 mb-3">สัดส่วนการชำระเงิน</h4>
+          <div class="relative h-44 flex justify-center">
             <canvas id="statusPieChart"></canvas>
           </div>
         </div>
@@ -212,6 +274,102 @@
     let barChartInstance = null;
     let pieChartInstance = null;
 
+    // --- PIN LOGIC (iOS 6-Digit Pad) ---
+    const PIN_KEY = 'app_pin_code';
+    let currentPinInput = '';
+    let isSettingInitialPin = false;
+
+    function initPinLock() {
+      const savedPin = localStorage.getItem(PIN_KEY);
+      currentPinInput = '';
+      updateDots();
+      document.getElementById('pinErrorMsg').innerText = '';
+
+      if (!savedPin) {
+        isSettingInitialPin = true;
+        document.getElementById('pinPromptTitle').innerText = 'ตั้งรหัส PIN ใหม่';
+        document.getElementById('pinPromptSubtitle').innerText = 'กำหนดรหัส 6 หลักเพื่อความปลอดภัย';
+      } else {
+        isSettingInitialPin = false;
+        document.getElementById('pinPromptTitle').innerText = 'Passcode';
+        document.getElementById('pinPromptSubtitle').innerText = 'ใส่รหัส PIN 6 หลักเพื่อเข้าสู่ระบบ';
+      }
+      document.getElementById('pinLockScreen').classList.remove('hidden');
+    }
+
+    function pressPin(num) {
+      if (currentPinInput.length < 6) {
+        currentPinInput += num;
+        updateDots();
+        if (currentPinInput.length === 6) {
+          setTimeout(verifyPin, 150);
+        }
+      }
+    }
+
+    function deletePin() {
+      if (currentPinInput.length > 0) {
+        currentPinInput = currentPinInput.slice(0, -1);
+        updateDots();
+      }
+    }
+
+    function clearPin() {
+      currentPinInput = '';
+      updateDots();
+    }
+
+    function updateDots() {
+      for (let i = 0; i < 6; i++) {
+        const dot = document.getElementById(`dot-${i}`);
+        if (i < currentPinInput.length) {
+          dot.className = "w-3.5 h-3.5 rounded-full bg-gradient-to-r from-indigo-500 to-violet-500 shadow-md shadow-indigo-500/50 scale-110 transition-all duration-150";
+        } else {
+          dot.className = "w-3.5 h-3.5 rounded-full border-2 border-slate-600 transition-all duration-150";
+        }
+      }
+    }
+
+    function verifyPin() {
+      const savedPin = localStorage.getItem(PIN_KEY);
+      if (isSettingInitialPin) {
+        localStorage.setItem(PIN_KEY, currentPinInput);
+        document.getElementById('pinLockScreen').classList.add('hidden');
+      } else {
+        if (currentPinInput === savedPin) {
+          document.getElementById('pinLockScreen').classList.add('hidden');
+          document.getElementById('pinErrorMsg').innerText = '';
+        } else {
+          const pad = document.getElementById('pinPadContainer');
+          pad.classList.add('shake-animation');
+          document.getElementById('pinErrorMsg').innerText = 'รหัส PIN ไม่ถูกต้อง';
+          setTimeout(() => {
+            pad.classList.remove('shake-animation');
+            clearPin();
+          }, 400);
+        }
+      }
+    }
+
+    function changePinSetting() {
+      const currentPin = localStorage.getItem(PIN_KEY);
+      if (currentPin) {
+        const check = prompt('กรุณากรอกรหัส PIN เดิม (6 หลัก):');
+        if (check !== currentPin) {
+          alert('รหัส PIN เดิมไม่ถูกต้อง');
+          return;
+        }
+      }
+      const newPin = prompt('กรอกรหัส PIN ใหม่ 6 หลัก (ตัวเลขเท่านั้น):');
+      if (newPin && newPin.length === 6 && !isNaN(newPin)) {
+        localStorage.setItem(PIN_KEY, newPin);
+        alert('เปลี่ยนรหัส PIN สำเร็จแล้ว!');
+      } else if (newPin !== null) {
+        alert('กรุณากรอกตัวเลข 6 หลักเท่านั้น');
+      }
+    }
+
+    // --- Core Data & Storage ---
     function getStorageKey(date = currentDate) {
       return `bills_${date.getFullYear()}_${date.getMonth()}`;
     }
@@ -246,9 +404,9 @@
       ['all', 'unpaid', 'paid'].forEach(type => {
         const btn = document.getElementById('filter' + type.charAt(0).toUpperCase() + type.slice(1));
         if (type === filter) {
-          btn.className = "px-2.5 py-1.5 rounded-lg bg-blue-600 text-white font-medium transition";
+          btn.className = "px-3 py-1 rounded-lg text-xs font-medium bg-indigo-600 text-white transition";
         } else {
-          btn.className = "px-2.5 py-1.5 rounded-lg bg-slate-700/50 hover:bg-slate-700 text-slate-300 transition";
+          btn.className = "px-3 py-1 rounded-lg text-xs font-medium text-slate-400 hover:text-white transition";
         }
       });
       render();
@@ -285,7 +443,7 @@
       const editId = document.getElementById('editBillId').value;
 
       if (!title || isNaN(amount)) {
-        alert('กรุณากรอกชื่อรายการและจำนวนเงินให้ถูกต้อง');
+        alert('กรุณากรอกชื่อรายการและจำนวนเงินให้ครบถ้วน');
         return;
       }
 
@@ -339,13 +497,13 @@
 
       if (prevBills.length === 0) {
         const prevMonthName = thaiMonths[prevDate.getMonth()];
-        alert(`ไม่พบรายการบิลในเดือน ${prevMonthName} ที่จะคัดลอก`);
+        alert(`ไม่พบรายการบิลในเดือน ${prevMonthName} ที่จะดึงข้อมูล`);
         return;
       }
 
       let currentBills = getBills();
       if (currentBills.length > 0) {
-        if (!confirm('เดือนนี้มีรายการอยู่แล้ว ต้องการดึงรายการจากเดือนที่แล้วมาเพิ่มต่อท้ายใช่หรือไม่?')) {
+        if (!confirm('เดือนนี้มีรายการบิลอยู่แล้ว ต้องการดึงรายการเก่ามาเพิ่มต่อท้ายหรือไม่?')) {
           return;
         }
       }
@@ -364,13 +522,12 @@
 
     function resetMonthData() {
       const monthName = thaiMonths[currentDate.getMonth()];
-      if (confirm(`คุณต้องการลบข้อมูลบิลทั้งหมดของเดือน ${monthName} ใช่หรือไม่?`)) {
+      if (confirm(`ต้องการล้างข้อมูลทั้งหมดของเดือน ${monthName} ใช่หรือไม่?`)) {
         localStorage.removeItem(getStorageKey());
         render();
       }
     }
 
-    // Export & Backup
     function exportData() {
       const exportObject = {};
       for (let i = 0; i < localStorage.length; i++) {
@@ -382,13 +539,12 @@
       const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportObject, null, 2));
       const downloadAnchor = document.createElement('a');
       downloadAnchor.setAttribute("href", dataStr);
-      downloadAnchor.setAttribute("download", `bill_tracker_backup_${new Date().toISOString().slice(0,10)}.json`);
+      downloadAnchor.setAttribute("download", `bill_backup_${new Date().toISOString().slice(0,10)}.json`);
       document.body.appendChild(downloadAnchor);
       downloadAnchor.click();
       downloadAnchor.remove();
     }
 
-    // Import Data
     function importData(event) {
       const file = event.target.files[0];
       if (!file) return;
@@ -404,17 +560,16 @@
               count++;
             }
           }
-          alert(`นำเข้าข้อมูลเรียบร้อยแล้ว (${count} ช่วงเวลา)`);
+          alert(`นำเข้าข้อมูลเรียบร้อยแล้ว (${count} เดือน)`);
           render();
         } catch (err) {
-          alert('ไฟล์ไม่ถูกต้อง กรุณาเลือกไฟล์สำรองข้อมูล JSON ของแอปนี้');
+          alert('ไฟล์ไม่ถูกต้อง กรุณาเลือกไฟล์สำรองข้อมูล JSON');
         }
       };
       reader.readAsText(file);
       event.target.value = '';
     }
 
-    // Analytics & Charts
     function toggleAnalyticsModal() {
       const modal = document.getElementById('analyticsModal');
       const isHidden = modal.classList.toggle('hidden');
@@ -449,7 +604,6 @@
       document.getElementById('yearPaidAmount').innerText = formatCurrency(yearPaid);
       document.getElementById('yearAverageMonth').innerText = formatCurrency(monthsWithData > 0 ? (yearTotal / monthsWithData) : 0);
 
-      // Render Bar Chart
       const barCtx = document.getElementById('monthlyBarChart').getContext('2d');
       if (barChartInstance) barChartInstance.destroy();
       barChartInstance = new Chart(barCtx, {
@@ -459,8 +613,8 @@
           datasets: [{
             label: 'ยอดค่าใช้จ่าย (บาท)',
             data: monthlyTotals,
-            backgroundColor: 'rgba(59, 130, 246, 0.7)',
-            borderColor: 'rgb(59, 130, 246)',
+            backgroundColor: 'rgba(99, 102, 241, 0.7)',
+            borderColor: 'rgb(99, 102, 241)',
             borderRadius: 8,
             borderWidth: 1
           }]
@@ -468,30 +622,21 @@
         options: {
           responsive: true,
           maintainAspectRatio: false,
-          plugins: {
-            legend: { display: false }
-          },
+          plugins: { legend: { display: false } },
           scales: {
-            y: {
-              ticks: { color: '#94a3b8' },
-              grid: { color: 'rgba(51, 65, 85, 0.4)' }
-            },
-            x: {
-              ticks: { color: '#94a3b8' },
-              grid: { display: false }
-            }
+            y: { ticks: { color: '#64748b' }, grid: { color: 'rgba(51, 65, 85, 0.3)' } },
+            x: { ticks: { color: '#64748b' }, grid: { display: false } }
           }
         }
       });
 
-      // Render Pie Chart
       const pieCtx = document.getElementById('statusPieChart').getContext('2d');
       if (pieChartInstance) pieChartInstance.destroy();
       const unpaidYear = Math.max(0, yearTotal - yearPaid);
       pieChartInstance = new Chart(pieCtx, {
         type: 'doughnut',
         data: {
-          labels: ['จ่ายแล้ว', 'ยังไม่จ่าย'],
+          labels: ['จ่ายแล้ว', 'ยังค้างจ่าย'],
           datasets: [{
             data: [yearPaid, unpaidYear],
             backgroundColor: ['#10b981', '#f43f5e'],
@@ -502,10 +647,7 @@
           responsive: true,
           maintainAspectRatio: false,
           plugins: {
-            legend: {
-              position: 'bottom',
-              labels: { color: '#cbd5e1' }
-            }
+            legend: { position: 'bottom', labels: { color: '#94a3b8', font: { size: 11 } } }
           }
         }
       });
@@ -523,7 +665,6 @@
         if (item.paid) paidTotal += item.amount;
       });
 
-      // Search & Status filter
       const searchQuery = (document.getElementById('searchInput')?.value || '').trim().toLowerCase();
       if (searchQuery) {
         bills = bills.filter(b => b.title.toLowerCase().includes(searchQuery));
@@ -537,61 +678,52 @@
 
       if (bills.length === 0) {
         container.innerHTML = `
-          <div class="text-center py-12 bg-slate-800/40 border border-slate-700/50 rounded-2xl text-slate-400">
-            <p class="text-sm">ไม่พบรายการบิลที่ค้นหาหรือยังไม่มีรายการ</p>
-            <p class="text-xs text-slate-500 mt-1">กดปุ่ม "+ เพิ่มบิลใหม่" หรือ "คัดลอกบิลจากเดือนที่แล้ว"</p>
+          <div class="text-center py-12 glass-card rounded-2xl text-slate-500 border-dashed border-2 border-slate-700/50">
+            <p class="text-xs">ยังไม่มีรายการบิลในเงื่อนไขนี้</p>
           </div>
         `;
       } else {
         bills.forEach(item => {
           const card = document.createElement('div');
-          card.className = `flex items-center justify-between p-4 rounded-2xl border transition ${
-            item.paid 
-              ? 'bg-slate-800/40 border-slate-700/40 opacity-75' 
-              : 'bg-slate-800 border-slate-700/90 shadow-sm'
+          card.className = `flex items-center justify-between p-3.5 rounded-2xl glass-card transition-all duration-200 ${
+            item.paid ? 'opacity-60 bg-slate-900/30' : 'hover:border-slate-600'
           }`;
 
           card.innerHTML = `
             <div class="flex-1 pr-3">
               <div class="flex items-center space-x-2">
-                <span class="text-sm font-semibold text-white ${item.paid ? 'line-through text-slate-400' : ''}">
+                <span class="text-xs font-semibold text-white ${item.paid ? 'line-through text-slate-500' : ''}">
                   ${item.title}
                 </span>
-                <span class="text-[10px] px-2 py-0.5 rounded-full font-medium ${
+                <span class="text-[9px] px-2 py-0.5 rounded-full font-medium ${
                   item.paid 
-                    ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' 
-                    : 'bg-amber-500/10 text-amber-400 border border-amber-500/20'
+                    ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30' 
+                    : 'bg-amber-500/15 text-amber-300 border border-amber-500/30'
                 }">
-                  ${item.paid ? 'จ่ายแล้ว' : 'รอชำระ'}
+                  ${item.paid ? 'เคลียร์แล้ว' : 'รอชำระ'}
                 </span>
               </div>
-              <p class="text-xs text-slate-400 mt-0.5">
-                ${item.dueDate ? `ครบกำหนดชำระ: ${item.dueDate}` : 'ไม่ได้ระบุวันครบกำหนด'}
+              <p class="text-[10px] text-slate-400 mt-0.5 font-normal">
+                ${item.dueDate ? `กำหนดชำระ: ${item.dueDate}` : 'ไม่ได้ระบุวันครบกำหนด'}
               </p>
             </div>
 
-            <div class="flex items-center space-x-3">
-              <div class="text-right">
-                <p class="text-sm font-bold ${item.paid ? 'text-slate-400 line-through' : 'text-blue-400'}">
-                  ${formatCurrency(item.amount)}
-                </p>
-              </div>
-              <button onclick="togglePaid(${item.id})" class="px-2.5 py-1.5 rounded-xl text-xs font-medium transition ${
+            <div class="flex items-center space-x-2.5">
+              <p class="text-xs font-bold ${item.paid ? 'text-slate-500 line-through' : 'text-indigo-400'}">
+                ${formatCurrency(item.amount)}
+              </p>
+              <button onclick="togglePaid(${item.id})" class="px-2.5 py-1 rounded-xl text-[11px] font-medium transition active:scale-95 ${
                 item.paid 
-                  ? 'bg-slate-700 text-slate-300 hover:bg-slate-600' 
-                  : 'bg-emerald-600 text-white hover:bg-emerald-500'
+                  ? 'bg-slate-700/60 text-slate-400 hover:bg-slate-700' 
+                  : 'bg-emerald-600 text-white hover:bg-emerald-500 shadow-sm shadow-emerald-600/30'
               }">
-                ${item.paid ? 'ยกเลิกจ่าย' : 'เช็คจ่าย'}
+                ${item.paid ? 'ยกเลิก' : 'จ่ายแล้ว'}
               </button>
-              <button onclick="openModal(${item.id})" title="แก้ไข" class="p-1.5 rounded-xl bg-slate-700/60 hover:bg-slate-700 text-slate-300 transition">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path>
-                </svg>
+              <button onclick="openModal(${item.id})" class="p-1 rounded-lg text-slate-400 hover:text-white transition">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
               </button>
-              <button onclick="deleteBill(${item.id})" title="ลบ" class="p-1.5 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 transition">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                </svg>
+              <button onclick="deleteBill(${item.id})" class="p-1 rounded-lg text-slate-500 hover:text-rose-400 transition">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
               </button>
             </div>
           `;
@@ -604,6 +736,8 @@
       document.getElementById('remainSum').innerText = formatCurrency(Math.max(0, total - paidTotal));
     }
 
+    // Startup
+    initPinLock();
     updateMonthHeader();
     render();
   </script>
