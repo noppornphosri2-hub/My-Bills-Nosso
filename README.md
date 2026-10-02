@@ -1,1 +1,297 @@
-# My-Bills-Nosso
+# My-Bills-Nosso<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ระบบเช็คบิลรายเดือน - Bill Tracker</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Prompt', sans-serif; }
+  </style>
+</head>
+<body class="bg-[#0f172a] text-slate-100 min-h-screen pb-20">
+
+  <div class="max-w-2xl mx-auto px-4 py-6">
+    <!-- Header -->
+    <div class="flex items-center justify-between mb-6">
+      <div class="flex items-center space-x-3">
+        <div class="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center shadow-lg shadow-blue-500/30">
+          <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path>
+          </svg>
+        </div>
+        <div>
+          <h1 class="text-xl font-bold tracking-tight text-white">ระบบเช็คบิลรายเดือน</h1>
+          <p class="text-xs text-slate-400">บันทึกและตรวจสอบสถานะการชำระเงินในแต่ละเดือน</p>
+        </div>
+      </div>
+      <button onclick="resetMonthData()" class="text-xs text-rose-400 hover:text-rose-300 border border-rose-500/30 px-2.5 py-1.5 rounded-lg hover:bg-rose-500/10 transition flex items-center gap-1">
+        <span>ล้างข้อมูลเดือนนี้</span>
+      </button>
+    </div>
+
+    <!-- Month Navigation -->
+    <div class="flex items-center justify-between bg-slate-800/80 backdrop-blur border border-slate-700/60 p-3 rounded-2xl mb-6">
+      <button onclick="changeMonth(-1)" class="px-3 py-1.5 rounded-xl bg-slate-700/50 hover:bg-slate-700 text-xs font-medium text-slate-300 transition">
+        ◀ เดือนก่อนหน้า
+      </button>
+      <div id="currentMonthLabel" class="text-base font-semibold text-blue-400"></div>
+      <button onclick="changeMonth(1)" class="px-3 py-1.5 rounded-xl bg-slate-700/50 hover:bg-slate-700 text-xs font-medium text-slate-300 transition">
+        เดือนถัดไป ▶
+      </button>
+    </div>
+
+    <!-- Summary Cards -->
+    <div class="grid grid-cols-3 gap-3 mb-6">
+      <div class="bg-slate-800/60 border border-slate-700/50 p-3.5 rounded-2xl">
+        <p class="text-[11px] text-slate-400 mb-1">ยอดรวมที่ต้องจ่าย</p>
+        <p id="totalAmount" class="text-base sm:text-lg font-bold text-blue-400">฿0</p>
+      </div>
+      <div class="bg-slate-800/60 border border-slate-700/50 p-3.5 rounded-2xl">
+        <p class="text-[11px] text-slate-400 mb-1">จ่ายเรียบร้อยแล้ว</p>
+        <p id="paidAmount" class="text-base sm:text-lg font-bold text-emerald-400">฿0</p>
+      </div>
+      <div class="bg-slate-800/60 border border-slate-700/50 p-3.5 rounded-2xl">
+        <p class="text-[11px] text-slate-400 mb-1">ค้างจ่าย / ยังไม่จ่าย</p>
+        <p id="pendingAmount" class="text-base sm:text-lg font-bold text-rose-400">฿0</p>
+      </div>
+    </div>
+
+    <!-- Action Header -->
+    <div class="flex items-center justify-between mb-4">
+      <h2 class="text-sm font-semibold text-slate-300">รายการบิลในเดือนนี้</h2>
+      <button onclick="openAddModal()" class="px-3 py-1.5 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-medium shadow-md shadow-blue-600/30 transition flex items-center gap-1">
+        <span>+ เพิ่มบิลใหม่</span>
+      </button>
+    </div>
+
+    <!-- Bill List Container -->
+    <div id="billList" class="space-y-3">
+      <!-- Items dynamically generated -->
+    </div>
+  </div>
+
+  <!-- Modal สำหรับ เพิ่ม / แก้ไข บิล -->
+  <div id="billModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
+    <div class="bg-slate-800 border border-slate-700 rounded-2xl w-full max-w-md p-5 shadow-2xl">
+      <h3 id="modalTitle" class="text-lg font-bold text-white mb-4">เพิ่มบิลใหม่</h3>
+      <input type="hidden" id="editBillId">
+      
+      <div class="space-y-4 text-sm">
+        <div>
+          <label class="block text-slate-400 text-xs mb-1">ชื่อรายการบิล</label>
+          <input type="text" id="billTitle" placeholder="เช่น ค่าไฟ หม้อตา, ค่าเน็ต NT" class="w-full bg-slate-900/80 border border-slate-700 rounded-xl px-3 py-2 text-white outline-none focus:border-blue-500">
+        </div>
+        <div>
+          <label class="block text-slate-400 text-xs mb-1">จำนวนเงิน (บาท)</label>
+          <input type="number" step="0.01" id="billAmount" placeholder="0.00" class="w-full bg-slate-900/80 border border-slate-700 rounded-xl px-3 py-2 text-white outline-none focus:border-blue-500">
+        </div>
+        <div>
+          <label class="block text-slate-400 text-xs mb-1">วันครบกำหนด / รายละเอียดเพิ่มเติม</label>
+          <input type="text" id="billDueNote" placeholder="เช่น ครบกำหนดทุกวันที่ 21 ของเดือน" class="w-full bg-slate-900/80 border border-slate-700 rounded-xl px-3 py-2 text-white outline-none focus:border-blue-500">
+        </div>
+      </div>
+
+      <div class="flex items-center justify-end gap-2 mt-6">
+        <button onclick="closeModal()" class="px-4 py-2 rounded-xl bg-slate-700 text-slate-300 text-xs hover:bg-slate-600 transition">ยกเลิก</button>
+        <button onclick="saveBill()" class="px-4 py-2 rounded-xl bg-blue-600 text-white text-xs font-medium hover:bg-blue-500 transition shadow-lg shadow-blue-600/30">บันทึกข้อมูล</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const MONTH_NAMES = [
+      'มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน',
+      'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'
+    ];
+
+    let currentDate = new Date();
+    let currentYear = currentDate.getFullYear();
+    let currentMonth = currentDate.getMonth();
+
+    function getStorageKey() {
+      return `bills_${currentYear}_${currentMonth}`;
+    }
+
+    function getBills() {
+      const data = localStorage.getItem(getStorageKey());
+      return data ? JSON.parse(data) : [];
+    }
+
+    function saveBills(bills) {
+      localStorage.setItem(getStorageKey(), JSON.stringify(bills));
+      render();
+    }
+
+    function changeMonth(delta) {
+      currentMonth += delta;
+      if (currentMonth < 0) {
+        currentMonth = 11;
+        currentYear -= 1;
+      } else if (currentMonth > 11) {
+        currentMonth = 0;
+        currentYear += 1;
+      }
+      render();
+    }
+
+    function formatNumber(num) {
+      return Number(num).toLocaleString('th-TH', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
+    }
+
+    function render() {
+      const thaiYear = currentYear + 543;
+      document.getElementById('currentMonthLabel').innerText = `${MONTH_NAMES[currentMonth]} ${thaiYear}`;
+
+      const bills = getBills();
+      const listContainer = document.getElementById('billList');
+      listContainer.innerHTML = '';
+
+      let total = 0;
+      let paid = 0;
+
+      if (bills.length === 0) {
+        listContainer.innerHTML = `
+          <div class="text-center py-12 bg-slate-800/30 border border-dashed border-slate-700/60 rounded-2xl p-6">
+            <p class="text-slate-400 text-sm font-medium">ยังไม่มีรายการบิลในระบบ</p>
+            <p class="text-slate-500 text-xs mt-1">กดปุ่ม "+ เพิ่มบิลใหม่" เพื่อเริ่มใส่รายการค่าใช้จ่ายของคุณ</p>
+          </div>
+        `;
+      } else {
+        bills.forEach(bill => {
+          const amt = parseFloat(bill.amount) || 0;
+          total += amt;
+          if (bill.paid) paid += amt;
+
+          const item = document.createElement('div');
+          item.className = 'bg-slate-800/70 border border-slate-700/60 p-3.5 rounded-2xl flex items-center justify-between gap-3 hover:border-slate-600 transition';
+          item.innerHTML = `
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-2 mb-1">
+                <span class="font-medium text-sm text-white truncate">${bill.title}</span>
+                <span class="text-[10px] px-2 py-0.5 rounded-full ${bill.paid ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-amber-500/20 text-amber-400 border border-amber-500/30'}">
+                  ${bill.paid ? 'จ่ายแล้ว' : 'ยังไม่จ่าย'}
+                </span>
+              </div>
+              <p class="text-xs text-slate-400 truncate">${bill.dueNote || 'ไม่มีบันทึกวันครบกำหนด'}</p>
+            </div>
+            
+            <div class="flex items-center gap-2">
+              <div class="text-right">
+                <p class="text-sm font-semibold ${bill.paid ? 'text-slate-400 line-through' : 'text-slate-100'}">฿${formatNumber(amt)}</p>
+              </div>
+              
+              <!-- ปุ่มชำระเงินแล้ว/ยังไม่จ่าย -->
+              <button onclick="togglePaid('${bill.id}')" class="px-2.5 py-1.5 rounded-lg text-xs font-medium transition ${bill.paid ? 'bg-emerald-500/20 text-emerald-300 hover:bg-emerald-500/30' : 'bg-slate-700 text-slate-300 hover:bg-slate-600'}">
+                ${bill.paid ? '✓ จ่ายแล้ว' : 'เช็คจ่าย'}
+              </button>
+
+              <!-- ปุ่มแก้ไข (ดินสอ) -->
+              <button onclick="openEditModal('${bill.id}')" title="แก้ไข" class="p-1.5 text-slate-400 hover:text-blue-400 hover:bg-slate-700/60 rounded-lg transition">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path>
+                </svg>
+              </button>
+
+              <!-- ปุ่มลบ (กากบาท) -->
+              <button onclick="deleteBill('${bill.id}')" title="ลบ" class="p-1.5 text-slate-400 hover:text-rose-400 hover:bg-slate-700/60 rounded-lg transition">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+              </button>
+            </div>
+          `;
+          listContainer.appendChild(item);
+        });
+      }
+
+      document.getElementById('totalAmount').innerText = `฿${formatNumber(total)}`;
+      document.getElementById('paidAmount').innerText = `฿${formatNumber(paid)}`;
+      document.getElementById('pendingAmount').innerText = `฿${formatNumber(total - paid)}`;
+    }
+
+    function togglePaid(id) {
+      const bills = getBills();
+      const updated = bills.map(b => b.id === id ? { ...b, paid: !b.paid } : b);
+      saveBills(updated);
+    }
+
+    function deleteBill(id) {
+      if (confirm('คุณต้องการลบรายการนี้ใช่หรือไม่?')) {
+        const bills = getBills();
+        saveBills(bills.filter(b => b.id !== id));
+      }
+    }
+
+    function openAddModal() {
+      document.getElementById('modalTitle').innerText = 'เพิ่มบิลใหม่';
+      document.getElementById('editBillId').value = '';
+      document.getElementById('billTitle').value = '';
+      document.getElementById('billAmount').value = '';
+      document.getElementById('billDueNote').value = '';
+      document.getElementById('billModal').classList.remove('hidden');
+      document.getElementById('billModal').classList.add('flex');
+    }
+
+    function openEditModal(id) {
+      const bill = getBills().find(b => b.id === id);
+      if (!bill) return;
+
+      document.getElementById('modalTitle').innerText = 'แก้ไขรายการบิล';
+      document.getElementById('editBillId').value = bill.id;
+      document.getElementById('billTitle').value = bill.title;
+      document.getElementById('billAmount').value = bill.amount;
+      document.getElementById('billDueNote').value = bill.dueNote || '';
+      document.getElementById('billModal').classList.remove('hidden');
+      document.getElementById('billModal').classList.add('flex');
+    }
+
+    function closeModal() {
+      document.getElementById('billModal').classList.add('hidden');
+      document.getElementById('billModal').classList.remove('flex');
+    }
+
+    function saveBill() {
+      const id = document.getElementById('editBillId').value;
+      const title = document.getElementById('billTitle').value.trim();
+      const amount = parseFloat(document.getElementById('billAmount').value) || 0;
+      const dueNote = document.getElementById('billDueNote').value.trim();
+
+      if (!title) {
+        alert('กรุณากรอกชื่อรายการบิล');
+        return;
+      }
+
+      let bills = getBills();
+
+      if (id) {
+        // อัปเดตรายการเดิม
+        bills = bills.map(b => b.id === id ? { ...b, title, amount, dueNote } : b);
+      } else {
+        // เพิ่มรายการใหม่
+        bills.push({
+          id: Date.now().toString(),
+          title,
+          amount,
+          dueNote,
+          paid: false
+        });
+      }
+
+      saveBills(bills);
+      closeModal();
+    }
+
+    function resetMonthData() {
+      if (confirm('ต้องการล้างข้อมูลบิลทั้งหมดของเดือนนี้ใช่หรือไม่?')) {
+        localStorage.removeItem(getStorageKey());
+        render();
+      }
+    }
+
+    // เริ่มต้นแสดงผล
+    render();
+  </script>
+</body>
+</html>
