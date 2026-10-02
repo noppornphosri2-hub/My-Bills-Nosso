@@ -12,285 +12,346 @@
 </head>
 <body class="bg-[#0f172a] text-slate-100 min-h-screen pb-20">
 
-  <div class="max-w-2xl mx-auto px-4 py-6">
+  <div class="max-w-2xl mx-auto px-4 py-8">
     <!-- Header -->
     <div class="flex items-center justify-between mb-6">
       <div class="flex items-center space-x-3">
-        <div class="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center shadow-lg shadow-blue-500/30">
+        <div class="p-3 bg-blue-600 rounded-xl shadow-lg shadow-blue-500/30">
           <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path>
           </svg>
         </div>
         <div>
-          <h1 class="text-xl font-bold tracking-tight text-white">ระบบเช็คบิลรายเดือน</h1>
+          <h1 class="text-xl font-bold tracking-tight">ระบบเช็คบิลรายเดือน</h1>
           <p class="text-xs text-slate-400">บันทึกและตรวจสอบสถานะการชำระเงินในแต่ละเดือน</p>
         </div>
       </div>
-      <button onclick="resetMonthData()" class="text-xs text-rose-400 hover:text-rose-300 border border-rose-500/30 px-2.5 py-1.5 rounded-lg hover:bg-rose-500/10 transition flex items-center gap-1">
-        <span>ล้างข้อมูลเดือนนี้</span>
+      <button onclick="resetMonthData()" class="text-xs text-rose-400/80 hover:text-rose-300 hover:underline">
+        ล้างข้อมูลเดือนนี้
       </button>
     </div>
 
     <!-- Month Navigation -->
-    <div class="flex items-center justify-between bg-slate-800/80 backdrop-blur border border-slate-700/60 p-3 rounded-2xl mb-6">
-      <button onclick="changeMonth(-1)" class="px-3 py-1.5 rounded-xl bg-slate-700/50 hover:bg-slate-700 text-xs font-medium text-slate-300 transition">
+    <div class="flex items-center justify-between bg-slate-800/80 backdrop-blur border border-slate-700/80 rounded-2xl p-2 mb-6">
+      <button onclick="changeMonth(-1)" class="px-3 py-1.5 rounded-xl bg-slate-700/50 hover:bg-slate-700 text-xs font-medium transition">
         ◀ เดือนก่อนหน้า
       </button>
-      <div id="currentMonthLabel" class="text-base font-semibold text-blue-400"></div>
-      <button onclick="changeMonth(1)" class="px-3 py-1.5 rounded-xl bg-slate-700/50 hover:bg-slate-700 text-xs font-medium text-slate-300 transition">
+      <span id="currentMonthLabel" class="text-base font-semibold text-blue-400"></span>
+      <button onclick="changeMonth(1)" class="px-3 py-1.5 rounded-xl bg-slate-700/50 hover:bg-slate-700 text-xs font-medium transition">
         เดือนถัดไป ▶
       </button>
     </div>
 
     <!-- Summary Cards -->
     <div class="grid grid-cols-3 gap-3 mb-6">
-      <div class="bg-slate-800/60 border border-slate-700/50 p-3.5 rounded-2xl">
-        <p class="text-[11px] text-slate-400 mb-1">ยอดรวมที่ต้องจ่าย</p>
-        <p id="totalAmount" class="text-base sm:text-lg font-bold text-blue-400">฿0</p>
+      <div class="bg-slate-800/60 border border-slate-700/60 rounded-2xl p-4 text-center">
+        <p class="text-xs text-slate-400 mb-1">ยอดรวมที่ต้องจ่าย</p>
+        <p id="totalSum" class="text-lg font-bold text-white">฿0</p>
       </div>
-      <div class="bg-slate-800/60 border border-slate-700/50 p-3.5 rounded-2xl">
-        <p class="text-[11px] text-slate-400 mb-1">จ่ายเรียบร้อยแล้ว</p>
-        <p id="paidAmount" class="text-base sm:text-lg font-bold text-emerald-400">฿0</p>
+      <div class="bg-slate-800/60 border border-slate-700/60 rounded-2xl p-4 text-center">
+        <p class="text-xs text-emerald-400 mb-1">จ่ายเรียบร้อยแล้ว</p>
+        <p id="paidSum" class="text-lg font-bold text-emerald-400">฿0</p>
       </div>
-      <div class="bg-slate-800/60 border border-slate-700/50 p-3.5 rounded-2xl">
-        <p class="text-[11px] text-slate-400 mb-1">ค้างจ่าย / ยังไม่จ่าย</p>
-        <p id="pendingAmount" class="text-base sm:text-lg font-bold text-rose-400">฿0</p>
+      <div class="bg-slate-800/60 border border-slate-700/60 rounded-2xl p-4 text-center">
+        <p class="text-xs text-rose-400 mb-1">ค้างจ่าย / ยังไม่จ่าย</p>
+        <p id="remainSum" class="text-lg font-bold text-rose-400">฿0</p>
       </div>
     </div>
 
-    <!-- Action Header -->
-    <div class="flex items-center justify-between mb-4">
-      <h2 class="text-sm font-semibold text-slate-300">รายการบิลในเดือนนี้</h2>
-      <button onclick="openAddModal()" class="px-3 py-1.5 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-medium shadow-md shadow-blue-600/30 transition flex items-center gap-1">
-        <span>+ เพิ่มบิลใหม่</span>
-      </button>
+    <!-- Actions & Tools -->
+    <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+      <h2 class="text-base font-semibold text-slate-200">รายการบิลในเดือนนี้</h2>
+      <div class="flex items-center space-x-2">
+        <button onclick="copyFromPreviousMonth()" class="flex items-center space-x-1.5 text-xs bg-slate-700/70 hover:bg-slate-700 text-slate-200 px-3 py-2 rounded-xl transition border border-slate-600">
+          <svg class="w-3.5 h-3.5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path>
+          </svg>
+          <span>คัดลอกบิลจากเดือนที่แล้ว</span>
+        </button>
+        <button onclick="openModal()" class="flex items-center space-x-1 text-xs bg-blue-600 hover:bg-blue-500 text-white px-3 py-2 rounded-xl font-medium transition shadow-md shadow-blue-600/30">
+          <span>+ เพิ่มบิลใหม่</span>
+        </button>
+      </div>
     </div>
 
     <!-- Bill List Container -->
-    <div id="billList" class="space-y-3">
-      <!-- Items dynamically generated -->
-    </div>
+    <div id="billContainer" class="space-y-3"></div>
+
   </div>
 
-  <!-- Modal สำหรับ เพิ่ม / แก้ไข บิล -->
-  <div id="billModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
-    <div class="bg-slate-800 border border-slate-700 rounded-2xl w-full max-w-md p-5 shadow-2xl">
-      <h3 id="modalTitle" class="text-lg font-bold text-white mb-4">เพิ่มบิลใหม่</h3>
-      <input type="hidden" id="editBillId">
-      
-      <div class="space-y-4 text-sm">
-        <div>
-          <label class="block text-slate-400 text-xs mb-1">ชื่อรายการบิล</label>
-          <input type="text" id="billTitle" placeholder="เช่น ค่าไฟ หม้อตา, ค่าเน็ต NT" class="w-full bg-slate-900/80 border border-slate-700 rounded-xl px-3 py-2 text-white outline-none focus:border-blue-500">
-        </div>
-        <div>
-          <label class="block text-slate-400 text-xs mb-1">จำนวนเงิน (บาท)</label>
-          <input type="number" step="0.01" id="billAmount" placeholder="0.00" class="w-full bg-slate-900/80 border border-slate-700 rounded-xl px-3 py-2 text-white outline-none focus:border-blue-500">
-        </div>
-        <div>
-          <label class="block text-slate-400 text-xs mb-1">วันครบกำหนด / รายละเอียดเพิ่มเติม</label>
-          <input type="text" id="billDueNote" placeholder="เช่น ครบกำหนดทุกวันที่ 21 ของเดือน" class="w-full bg-slate-900/80 border border-slate-700 rounded-xl px-3 py-2 text-white outline-none focus:border-blue-500">
-        </div>
+  <!-- Modal Form -->
+  <div id="modalOverlay" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-slate-800 border border-slate-700 w-full max-w-md rounded-2xl p-6 shadow-2xl">
+      <div class="flex items-center justify-between mb-4">
+        <h3 id="modalTitle" class="text-base font-bold text-white">เพิ่มรายการบิล</h3>
+        <button onclick="closeModal()" class="text-slate-400 hover:text-white">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </button>
       </div>
 
-      <div class="flex items-center justify-end gap-2 mt-6">
-        <button onclick="closeModal()" class="px-4 py-2 rounded-xl bg-slate-700 text-slate-300 text-xs hover:bg-slate-600 transition">ยกเลิก</button>
-        <button onclick="saveBill()" class="px-4 py-2 rounded-xl bg-blue-600 text-white text-xs font-medium hover:bg-blue-500 transition shadow-lg shadow-blue-600/30">บันทึกข้อมูล</button>
+      <input type="hidden" id="editBillId">
+
+      <div class="space-y-4">
+        <div>
+          <label class="block text-xs text-slate-400 mb-1">ชื่อรายการบิล</label>
+          <input type="text" id="billTitle" placeholder="เช่น ค่าไฟ, ค่าน้ำ, ค่าเน็ต" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-blue-500">
+        </div>
+        <div>
+          <label class="block text-xs text-slate-400 mb-1">จำนวนเงิน (บาท)</label>
+          <input type="number" step="0.01" id="billAmount" placeholder="0.00" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-blue-500">
+        </div>
+        <div>
+          <label class="block text-xs text-slate-400 mb-1">วันครบกำหนด (ไม่บังคับ)</label>
+          <input type="text" id="billDueDate" placeholder="เช่น วันที่ 25 ของเดือน" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-blue-500">
+        </div>
+        <div class="flex items-center justify-end space-x-2 pt-2">
+          <button onclick="closeModal()" class="px-4 py-2 rounded-xl bg-slate-700 text-xs text-slate-300 hover:bg-slate-600 transition">
+            ยกเลิก
+          </button>
+          <button onclick="saveBill()" class="px-4 py-2 rounded-xl bg-blue-600 text-xs text-white hover:bg-blue-500 font-medium transition">
+            บันทึก
+          </button>
+        </div>
       </div>
     </div>
   </div>
 
   <script>
-    const MONTH_NAMES = [
-      'มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน',
-      'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'
+    const thaiMonths = [
+      "มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน",
+      "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม"
     ];
 
     let currentDate = new Date();
-    let currentYear = currentDate.getFullYear();
-    let currentMonth = currentDate.getMonth();
 
-    function getStorageKey() {
-      return `bills_${currentYear}_${currentMonth}`;
+    function getStorageKey(date = currentDate) {
+      return `bills_${date.getFullYear()}_${date.getMonth()}`;
     }
 
-    function getBills() {
-      const data = localStorage.getItem(getStorageKey());
+    function getBills(date = currentDate) {
+      const data = localStorage.getItem(getStorageKey(date));
       return data ? JSON.parse(data) : [];
     }
 
-    function saveBills(bills) {
-      localStorage.setItem(getStorageKey(), JSON.stringify(bills));
+    function saveBills(bills, date = currentDate) {
+      localStorage.setItem(getStorageKey(date), JSON.stringify(bills));
+    }
+
+    function formatCurrency(num) {
+      return '฿' + Number(num || 0).toLocaleString('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    function updateMonthHeader() {
+      const monthName = thaiMonths[currentDate.getMonth()];
+      const thaiYear = currentDate.getFullYear() + 543;
+      document.getElementById('currentMonthLabel').innerText = `${monthName} ${thaiYear}`;
+    }
+
+    function changeMonth(direction) {
+      currentDate.setMonth(currentDate.getMonth() + direction);
+      updateMonthHeader();
       render();
     }
 
-    function changeMonth(delta) {
-      currentMonth += delta;
-      if (currentMonth < 0) {
-        currentMonth = 11;
-        currentYear -= 1;
-      } else if (currentMonth > 11) {
-        currentMonth = 0;
-        currentYear += 1;
-      }
-      render();
-    }
-
-    function formatNumber(num) {
-      return Number(num).toLocaleString('th-TH', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
-    }
-
-    function render() {
-      const thaiYear = currentYear + 543;
-      document.getElementById('currentMonthLabel').innerText = `${MONTH_NAMES[currentMonth]} ${thaiYear}`;
-
-      const bills = getBills();
-      const listContainer = document.getElementById('billList');
-      listContainer.innerHTML = '';
-
-      let total = 0;
-      let paid = 0;
-
-      if (bills.length === 0) {
-        listContainer.innerHTML = `
-          <div class="text-center py-12 bg-slate-800/30 border border-dashed border-slate-700/60 rounded-2xl p-6">
-            <p class="text-slate-400 text-sm font-medium">ยังไม่มีรายการบิลในระบบ</p>
-            <p class="text-slate-500 text-xs mt-1">กดปุ่ม "+ เพิ่มบิลใหม่" เพื่อเริ่มใส่รายการค่าใช้จ่ายของคุณ</p>
-          </div>
-        `;
-      } else {
-        bills.forEach(bill => {
-          const amt = parseFloat(bill.amount) || 0;
-          total += amt;
-          if (bill.paid) paid += amt;
-
-          const item = document.createElement('div');
-          item.className = 'bg-slate-800/70 border border-slate-700/60 p-3.5 rounded-2xl flex items-center justify-between gap-3 hover:border-slate-600 transition';
-          item.innerHTML = `
-            <div class="flex-1 min-w-0">
-              <div class="flex items-center gap-2 mb-1">
-                <span class="font-medium text-sm text-white truncate">${bill.title}</span>
-                <span class="text-[10px] px-2 py-0.5 rounded-full ${bill.paid ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-amber-500/20 text-amber-400 border border-amber-500/30'}">
-                  ${bill.paid ? 'จ่ายแล้ว' : 'ยังไม่จ่าย'}
-                </span>
-              </div>
-              <p class="text-xs text-slate-400 truncate">${bill.dueNote || 'ไม่มีบันทึกวันครบกำหนด'}</p>
-            </div>
-            
-            <div class="flex items-center gap-2">
-              <div class="text-right">
-                <p class="text-sm font-semibold ${bill.paid ? 'text-slate-400 line-through' : 'text-slate-100'}">฿${formatNumber(amt)}</p>
-              </div>
-              
-              <!-- ปุ่มชำระเงินแล้ว/ยังไม่จ่าย -->
-              <button onclick="togglePaid('${bill.id}')" class="px-2.5 py-1.5 rounded-lg text-xs font-medium transition ${bill.paid ? 'bg-emerald-500/20 text-emerald-300 hover:bg-emerald-500/30' : 'bg-slate-700 text-slate-300 hover:bg-slate-600'}">
-                ${bill.paid ? '✓ จ่ายแล้ว' : 'เช็คจ่าย'}
-              </button>
-
-              <!-- ปุ่มแก้ไข (ดินสอ) -->
-              <button onclick="openEditModal('${bill.id}')" title="แก้ไข" class="p-1.5 text-slate-400 hover:text-blue-400 hover:bg-slate-700/60 rounded-lg transition">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path>
-                </svg>
-              </button>
-
-              <!-- ปุ่มลบ (กากบาท) -->
-              <button onclick="deleteBill('${bill.id}')" title="ลบ" class="p-1.5 text-slate-400 hover:text-rose-400 hover:bg-slate-700/60 rounded-lg transition">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                </svg>
-              </button>
-            </div>
-          `;
-          listContainer.appendChild(item);
-        });
-      }
-
-      document.getElementById('totalAmount').innerText = `฿${formatNumber(total)}`;
-      document.getElementById('paidAmount').innerText = `฿${formatNumber(paid)}`;
-      document.getElementById('pendingAmount').innerText = `฿${formatNumber(total - paid)}`;
-    }
-
-    function togglePaid(id) {
-      const bills = getBills();
-      const updated = bills.map(b => b.id === id ? { ...b, paid: !b.paid } : b);
-      saveBills(updated);
-    }
-
-    function deleteBill(id) {
-      if (confirm('คุณต้องการลบรายการนี้ใช่หรือไม่?')) {
+    function openModal(editId = null) {
+      document.getElementById('editBillId').value = editId !== null ? editId : '';
+      if (editId !== null) {
         const bills = getBills();
-        saveBills(bills.filter(b => b.id !== id));
+        const item = bills.find(b => b.id === editId);
+        if (item) {
+          document.getElementById('modalTitle').innerText = 'แก้ไขรายการบิล';
+          document.getElementById('billTitle').value = item.title;
+          document.getElementById('billAmount').value = item.amount;
+          document.getElementById('billDueDate').value = item.dueDate || '';
+        }
+      } else {
+        document.getElementById('modalTitle').innerText = 'เพิ่มรายการบิล';
+        document.getElementById('billTitle').value = '';
+        document.getElementById('billAmount').value = '';
+        document.getElementById('billDueDate').value = '';
       }
-    }
-
-    function openAddModal() {
-      document.getElementById('modalTitle').innerText = 'เพิ่มบิลใหม่';
-      document.getElementById('editBillId').value = '';
-      document.getElementById('billTitle').value = '';
-      document.getElementById('billAmount').value = '';
-      document.getElementById('billDueNote').value = '';
-      document.getElementById('billModal').classList.remove('hidden');
-      document.getElementById('billModal').classList.add('flex');
-    }
-
-    function openEditModal(id) {
-      const bill = getBills().find(b => b.id === id);
-      if (!bill) return;
-
-      document.getElementById('modalTitle').innerText = 'แก้ไขรายการบิล';
-      document.getElementById('editBillId').value = bill.id;
-      document.getElementById('billTitle').value = bill.title;
-      document.getElementById('billAmount').value = bill.amount;
-      document.getElementById('billDueNote').value = bill.dueNote || '';
-      document.getElementById('billModal').classList.remove('hidden');
-      document.getElementById('billModal').classList.add('flex');
+      document.getElementById('modalOverlay').classList.remove('hidden');
     }
 
     function closeModal() {
-      document.getElementById('billModal').classList.add('hidden');
-      document.getElementById('billModal').classList.remove('flex');
+      document.getElementById('modalOverlay').classList.add('hidden');
     }
 
     function saveBill() {
-      const id = document.getElementById('editBillId').value;
       const title = document.getElementById('billTitle').value.trim();
-      const amount = parseFloat(document.getElementById('billAmount').value) || 0;
-      const dueNote = document.getElementById('billDueNote').value.trim();
+      const amount = parseFloat(document.getElementById('billAmount').value);
+      const dueDate = document.getElementById('billDueDate').value.trim();
+      const editId = document.getElementById('editBillId').value;
 
-      if (!title) {
-        alert('กรุณากรอกชื่อรายการบิล');
+      if (!title || isNaN(amount)) {
+        alert('กรุณากรอกชื่อรายการและจำนวนเงินให้ถูกต้อง');
         return;
       }
 
       let bills = getBills();
 
-      if (id) {
-        // อัปเดตรายการเดิม
-        bills = bills.map(b => b.id === id ? { ...b, title, amount, dueNote } : b);
+      if (editId !== '') {
+        const index = bills.findIndex(b => b.id == editId);
+        if (index !== -1) {
+          bills[index].title = title;
+          bills[index].amount = amount;
+          bills[index].dueDate = dueDate;
+        }
       } else {
-        // เพิ่มรายการใหม่
         bills.push({
-          id: Date.now().toString(),
+          id: Date.now(),
           title,
           amount,
-          dueNote,
+          dueDate,
           paid: false
         });
       }
 
       saveBills(bills);
       closeModal();
+      render();
+    }
+
+    function togglePaid(id) {
+      let bills = getBills();
+      const item = bills.find(b => b.id === id);
+      if (item) {
+        item.paid = !item.paid;
+        saveBills(bills);
+        render();
+      }
+    }
+
+    function deleteBill(id) {
+      if (confirm('คุณต้องการลบรายการนี้ใช่หรือไม่?')) {
+        let bills = getBills();
+        bills = bills.filter(b => b.id !== id);
+        saveBills(bills);
+        render();
+      }
+    }
+
+    function copyFromPreviousMonth() {
+      const prevDate = new Date(currentDate);
+      prevDate.setMonth(prevDate.getMonth() - 1);
+      const prevBills = getBills(prevDate);
+
+      if (prevBills.length === 0) {
+        const prevMonthName = thaiMonths[prevDate.getMonth()];
+        alert(`ไม่พบรายการบิลในเดือน ${prevMonthName} ที่จะคัดลอก`);
+        return;
+      }
+
+      let currentBills = getBills();
+      if (currentBills.length > 0) {
+        if (!confirm('เดือนนี้มีรายการอยู่แล้ว ต้องการดึงรายการจากเดือนที่แล้วมาเพิ่มต่อท้ายใช่หรือไม่?')) {
+          return;
+        }
+      }
+
+      const clonedBills = prevBills.map((b, idx) => ({
+        id: Date.now() + idx,
+        title: b.title,
+        amount: b.amount,
+        dueDate: b.dueDate || '',
+        paid: false // รีเซ็ตเป็นยังไม่จ่าย
+      }));
+
+      saveBills([...currentBills, ...clonedBills]);
+      render();
     }
 
     function resetMonthData() {
-      if (confirm('ต้องการล้างข้อมูลบิลทั้งหมดของเดือนนี้ใช่หรือไม่?')) {
+      const monthName = thaiMonths[currentDate.getMonth()];
+      if (confirm(`คุณต้องการลบข้อมูลบิลทั้งหมดของเดือน ${monthName} ใช่หรือไม่?`)) {
         localStorage.removeItem(getStorageKey());
         render();
       }
     }
 
-    // เริ่มต้นแสดงผล
+    function render() {
+      const bills = getBills();
+      const container = document.getElementById('billContainer');
+      container.innerHTML = '';
+
+      let total = 0;
+      let paidTotal = 0;
+
+      if (bills.length === 0) {
+        container.innerHTML = `
+          <div class="text-center py-12 bg-slate-800/40 border border-slate-700/50 rounded-2xl text-slate-400">
+            <p class="text-sm">ยังไม่มีรายการบิลในเดือนนี้</p>
+            <p class="text-xs text-slate-500 mt-1">กดปุ่ม "+ เพิ่มบิลใหม่" หรือ "คัดลอกบิลจากเดือนที่แล้ว"</p>
+          </div>
+        `;
+      } else {
+        bills.forEach(item => {
+          total += item.amount;
+          if (item.paid) paidTotal += item.amount;
+
+          const card = document.createElement('div');
+          card.className = `flex items-center justify-between p-4 rounded-2xl border transition ${
+            item.paid 
+              ? 'bg-slate-800/40 border-slate-700/40 opacity-75' 
+              : 'bg-slate-800 border-slate-700/90 shadow-sm'
+          }`;
+
+          card.innerHTML = `
+            <div class="flex-1 pr-3">
+              <div class="flex items-center space-x-2">
+                <span class="text-sm font-semibold text-white ${item.paid ? 'line-through text-slate-400' : ''}">
+                  ${item.title}
+                </span>
+                <span class="text-[10px] px-2 py-0.5 rounded-full font-medium ${
+                  item.paid 
+                    ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' 
+                    : 'bg-amber-500/10 text-amber-400 border border-amber-500/20'
+                }">
+                  ${item.paid ? 'จ่ายแล้ว' : 'รอชำระ'}
+                </span>
+              </div>
+              <p class="text-xs text-slate-400 mt-0.5">
+                ${item.dueDate ? `ครบกำหนดชำระ: ${item.dueDate}` : 'ไม่ได้ระบุวันครบกำหนด'}
+              </p>
+            </div>
+
+            <div class="flex items-center space-x-3">
+              <div class="text-right">
+                <p class="text-sm font-bold ${item.paid ? 'text-slate-400 line-through' : 'text-blue-400'}">
+                  ${formatCurrency(item.amount)}
+                </p>
+              </div>
+              <button onclick="togglePaid(${item.id})" class="px-2.5 py-1.5 rounded-xl text-xs font-medium transition ${
+                item.paid 
+                  ? 'bg-slate-700 text-slate-300 hover:bg-slate-600' 
+                  : 'bg-emerald-600 text-white hover:bg-emerald-500'
+              }">
+                ${item.paid ? 'ยกเลิกจ่าย' : 'เช็คจ่าย'}
+              </button>
+              <button onclick="openModal(${item.id})" title="แก้ไข" class="p-1.5 rounded-xl bg-slate-700/60 hover:bg-slate-700 text-slate-300 transition">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path>
+                </svg>
+              </button>
+              <button onclick="deleteBill(${item.id})" title="ลบ" class="p-1.5 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 transition">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+              </button>
+            </div>
+          `;
+          container.appendChild(card);
+        });
+      }
+
+      document.getElementById('totalSum').innerText = formatCurrency(total);
+      document.getElementById('paidSum').innerText = formatCurrency(paidTotal);
+      document.getElementById('remainSum').innerText = formatCurrency(Math.max(0, total - paidTotal));
+    }
+
+    updateMonthHeader();
     render();
   </script>
 </body>
